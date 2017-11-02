@@ -9,14 +9,6 @@ package numerical.program;
  *
  * @author mohamednagy
  */
-public class NumericalProgram {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
- 
+public class ExcelFile {
     
 }
