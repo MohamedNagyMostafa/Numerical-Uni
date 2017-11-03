@@ -5,8 +5,6 @@
  */
 package numerical.program;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
-
 /**
  *
  * @author mohamednagy
@@ -19,11 +17,6 @@ public class Mathematical {
     
     public Mathematical(QuestionHolder questionHolder){
         mQuestionHolder = questionHolder;
-        init();
-    }
-    
-    private void init(){
-        //TODO ... Set Table.
     }
     
     public Double applyNewtonForward(double value){

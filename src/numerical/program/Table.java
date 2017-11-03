@@ -52,7 +52,21 @@ public class Table {
     }
     
     private void unequalTableProcess(Double[] fxValues){
+        mTable = new ArrayList<>();
+        mTable.add(fxValues);
         
+        for(int node = 0 ; node < m_xValues.length - 1; node++){
+            
+            Double[] column = new Double[mTable.get(node).length - 1];
+            
+            for(int nodeCol = 0; nodeCol < column.length; nodeCol++){
+                column[nodeCol] = (mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol])/
+                        (m_xValues[mTable.size() + nodeCol] - m_xValues[nodeCol]);
+                Util.println(column[nodeCol] + " - ");
+            }
+            Util.println("done");
+            mTable.add(column);
+        }
     }
 
     private void equalTableProcess(Double[] fxValues){

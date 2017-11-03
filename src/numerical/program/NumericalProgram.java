@@ -5,7 +5,6 @@
  */
 package numerical.program;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
 
 /**
@@ -18,11 +17,10 @@ public class NumericalProgram {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Table table = new Table(new Double[]{8.0, 10.0, 12.0, 14.0, 16.0},
-        new Double[]{1000.0, 1900.0, 3250.0, 5400.0, 8950.0});
+        Table table = new Table(new Double[]{4.0,5.0,7.0,10.0,11.0,13.0},
+        new Double[]{48.0,100.0,294.0,100.0,1210.0,2028.0});
         QuestionHolder questionHolder = new QuestionHolder(table);
         Mathematical mathematical = new Mathematical(questionHolder);
-        mathematical.applyNewtonBackward(9);
     }
  
     
