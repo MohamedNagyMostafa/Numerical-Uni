@@ -7,6 +7,7 @@ package numerical.program;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
+
 /**
  *
  * @author mohamednagy
@@ -21,7 +22,7 @@ public class NumericalProgram {
         new Double[]{1000.0, 1900.0, 3250.0, 5400.0, 8950.0});
         QuestionHolder questionHolder = new QuestionHolder(table);
         Mathematical mathematical = new Mathematical(questionHolder);
-        Util.println("value = " + mathematical.applyNewtonForward(9));
+        mathematical.applyNewtonBackward(9);
     }
  
     

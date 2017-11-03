@@ -22,11 +22,11 @@ public class QuestionHolder {
     }
 
     public void setNewtonBackwardResult(Double newtonBackwardResult) {
-        this.mNewtonBackwardResult = mNewtonBackwardResult;
+        this.mNewtonBackwardResult = newtonBackwardResult;
     }
 
     public void setNewtonForwardResult(Double newtonForwardResult) {
-        this.mNewtonForwardResult = mNewtonForwardResult;
+        this.mNewtonForwardResult = newtonForwardResult;
     }
 
     public Double getNewtonBackwardResult() {

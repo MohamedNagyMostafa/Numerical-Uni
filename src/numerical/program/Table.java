@@ -75,8 +75,21 @@ public class Table {
         return mTable.get(deltaNumber)[deltaIndex];
     }
     
+    public Double deltaNodeValue(int deltaNumber){
+        return mTable.get(deltaNumber)[0];
+    }
+    
+    public Double inverseDeltaValue(int deltaNumber){
+        Double[] col = mTable.get(deltaNumber);
+        return col[col.length - 1];
+    }
+    
     public Double xValue(int xIndex){
         return m_xValues[xIndex];
+    }
+    
+    public Double max_xValue(){
+        return m_xValues[m_xValues.length - 1];
     }
     
     public Double distanceEqual(){

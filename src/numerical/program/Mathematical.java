@@ -27,7 +27,7 @@ public class Mathematical {
     }
     
     public Double applyNewtonForward(double value){
-        double pValue = calculateP_Forward(
+        double pValue = calculateP(
                                 value,
                                 mQuestionHolder.getTable().xValue(0),
                                 mQuestionHolder.getTable().distanceEqual()
@@ -38,26 +38,57 @@ public class Mathematical {
                         pValue,
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
-                        mQuestionHolder.getTable().deltaValue(0, 0),
+                        mQuestionHolder.getTable().deltaNodeValue(0),
                         pValue
         );
+        
         return mQuestionHolder.getNewtonForwardResult();
+    }
+    
+    public Double applyNewtonBackward(double value){
+        double pValue = calculateP(
+                                value,
+                                mQuestionHolder.getTable().max_xValue(),
+                                mQuestionHolder.getTable().distanceEqual()
+                        );
+        
+        newtonBackwardProcess(
+                        mQuestionHolder.getTable(), 
+                        pValue,
+                        INITTIAL_INDEX,
+                        INITIAL_FACTORIAL,
+                        mQuestionHolder.getTable().inverseDeltaValue(0),
+                        pValue
+        );
+        
+        return mQuestionHolder.getNewtonBackwardResult();
     }
     
     private void newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
-        Util.println("P = " + newP_Value + " factorial = " + factorial + " delta= " + table.deltaValue(index, 0) + "result = " + result);
             newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
-                    result + ((newP_Value * table.deltaValue(index, 0))/factorial), pValue);
+                    result + ((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
         }else{
-        Util.println("result = " + result);
             mQuestionHolder.setNewtonForwardResult(result);
         }
         
     }
     
-    private double calculateP_Forward(double value, double xNode, double distance){
+    private void newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
+        
+        if(table.containDelta(index)){
+            newtonBackwardProcess(table, newP_Value * (pValue + index), index + 1, factorial * (index + 1),
+                    result + ((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
+        }else{
+            mQuestionHolder.setNewtonBackwardResult(result);
+        }
+        
+    }
+    
+    private double calculateP(double value, double xNode, double distance){
         return (value - xNode)/ distance;
     }
+    
+   
 }
