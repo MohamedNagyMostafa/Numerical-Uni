@@ -5,6 +5,8 @@
  */
 package numerical.program;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+
 /**
  *
  * @author mohamednagy
@@ -24,28 +26,35 @@ public class Mathematical {
         //TODO ... Set Table.
     }
     
-    public void applyNewtonForward(double value){
-        mQuestionHolder.setNewtonForwardResult(
-                newtonForwardProcess(
-                        mQuestionHolder.getTable(), 
-                        calculateP_Forward(
+    public Double applyNewtonForward(double value){
+        double pValue = calculateP_Forward(
                                 value,
                                 mQuestionHolder.getTable().xValue(0),
                                 mQuestionHolder.getTable().distanceEqual()
-                        ),
+                        );
+        
+        newtonForwardProcess(
+                        mQuestionHolder.getTable(), 
+                        pValue,
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
-                        mQuestionHolder.getTable().deltaValue(0, 0)));
+                        mQuestionHolder.getTable().deltaValue(0, 0),
+                        pValue
+        );
+        return mQuestionHolder.getNewtonForwardResult();
     }
     
-    private Double newtonForwardProcess(Table table, double pValue, int index, long factorial, double result){
+    private void newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
+        
         if(table.containDelta(index)){
-            newtonForwardProcess(table, pValue * (pValue - index), index + 1, factorial * (factorial + 1),
-                    result + ((pValue * table.deltaValue(index, 0))/factorial));
+        Util.println("P = " + newP_Value + " factorial = " + factorial + " delta= " + table.deltaValue(index, 0) + "result = " + result);
+            newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
+                    result + ((newP_Value * table.deltaValue(index, 0))/factorial), pValue);
         }else{
-            return result;
+        Util.println("result = " + result);
+            mQuestionHolder.setNewtonForwardResult(result);
         }
-        return null;
+        
     }
     
     private double calculateP_Forward(double value, double xNode, double distance){

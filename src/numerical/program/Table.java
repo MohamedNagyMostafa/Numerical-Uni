@@ -5,6 +5,7 @@
  */
 package numerical.program;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.util.ArrayList;
 import org.omg.CORBA.ORB;
 
@@ -82,7 +83,7 @@ public class Table {
         return m_xValues[1] - m_xValues[0];
     }
     
-    public boolean containDelta(int index){
-        return mTable.contains(index);
+    public boolean containDelta(long index){
+        return (mTable.size() > index);
     }
 }
