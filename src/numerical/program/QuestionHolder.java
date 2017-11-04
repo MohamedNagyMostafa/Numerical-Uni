@@ -13,9 +13,11 @@ import java.util.ArrayList;
  */
 public class QuestionHolder {
     
-    Double mNewtonForwardResult;
-    Double mNewtonBackwardResult;
-    Table mTable;
+    private Double mNewtonForwardResult;
+    private Double mNewtonBackwardResult;
+    private Double mP_value;
+    private Double mNewtonError;
+    private Table mTable;
     
     public QuestionHolder(Table table){
         mTable = table;
@@ -37,6 +39,23 @@ public class QuestionHolder {
         return mNewtonForwardResult;
     }
 
+    public void setP_value(Double p_value) {
+        this.mP_value = p_value;
+    }
+
+    public Double getP_value() {
+        return mP_value;
+    }
+
+    public void setNewtonError(Double newtonError) {
+        this.mNewtonError = newtonError;
+    }
+
+    public Double getNewtonError() {
+        return mNewtonError;
+    }
+    
+    
     public Table getTable() {
         return mTable;
     }

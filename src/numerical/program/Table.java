@@ -7,6 +7,7 @@ package numerical.program;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.util.ArrayList;
+import javafx.util.Pair;
 import org.omg.CORBA.ORB;
 
 /**
@@ -14,7 +15,7 @@ import org.omg.CORBA.ORB;
  * @author mohamednagy
  */
 public class Table {
-    private static final short EQUAL_TABLE = 0;
+    private static final short EQUAL_TABLE = -1;
     private static final short UNEQUAL_TABLE = 1;
     
     private short mTableType;
@@ -112,5 +113,20 @@ public class Table {
     
     public boolean containDelta(long index){
         return (mTable.size() > index);
+    }
+    
+    public short tableType(){
+        return mTableType;
+    }
+    
+    public Pair<Double, Integer> deltaNewtonErrorValue(){
+        double deltaValue;
+        int index = 0;
+        do{
+            deltaValue = mTable.get(mTable.size() -1)[index++];
+        }while(deltaValue == 0);
+        
+        return new Pair<>(deltaValue, (mTable.size() - (index-1)) - 2 );
+        
     }
 }

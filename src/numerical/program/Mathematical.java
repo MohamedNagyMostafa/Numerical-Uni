@@ -11,7 +11,7 @@ package numerical.program;
  */
 public class Mathematical {
   
-    private QuestionHolder mQuestionHolder;
+    private final QuestionHolder mQuestionHolder;
     private static final short INITTIAL_INDEX = 1;
     private static final short INITIAL_FACTORIAL = 1; 
     
@@ -20,38 +20,40 @@ public class Mathematical {
     }
     
     public Double applyNewtonForward(double value){
-        double pValue = calculateP(
+        mQuestionHolder.setP_value(calculateP(
                                 value,
                                 mQuestionHolder.getTable().xValue(0),
                                 mQuestionHolder.getTable().distanceEqual()
-                        );
+                        )
+        );
         
         newtonForwardProcess(
                         mQuestionHolder.getTable(), 
-                        pValue,
+                        mQuestionHolder.getP_value(),
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
                         mQuestionHolder.getTable().deltaNodeValue(0),
-                        pValue
+                        mQuestionHolder.getP_value()
         );
         
         return mQuestionHolder.getNewtonForwardResult();
     }
     
     public Double applyNewtonBackward(double value){
-        double pValue = calculateP(
+        mQuestionHolder.setP_value(calculateP(
                                 value,
                                 mQuestionHolder.getTable().max_xValue(),
                                 mQuestionHolder.getTable().distanceEqual()
-                        );
+                        )
+        );
         
         newtonBackwardProcess(
                         mQuestionHolder.getTable(), 
-                        pValue,
+                        mQuestionHolder.getP_value(),
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
                         mQuestionHolder.getTable().inverseDeltaValue(0),
-                        pValue
+                        mQuestionHolder.getP_value()
         );
         
         return mQuestionHolder.getNewtonBackwardResult();
@@ -77,6 +79,27 @@ public class Mathematical {
             mQuestionHolder.setNewtonBackwardResult(result);
         }
         
+    }
+    
+    public double applyNewtonError(){
+        newtonError(
+                mQuestionHolder.getTable().tableType(),
+                mQuestionHolder.getP_value(),
+                mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
+                mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                1);
+        
+        return mQuestionHolder.getNewtonError();
+    }
+    
+    private void newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
+        if(nNew <= n){
+            newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
+        }else{
+            result = result * (deltaValue/(n + 1));
+            mQuestionHolder.setNewtonError(result);
+        }
     }
     
     private double calculateP(double value, double xNode, double distance){
