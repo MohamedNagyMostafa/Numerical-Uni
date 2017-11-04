@@ -29,7 +29,7 @@ public class Mathematical {
                         )
         );
         
-        newtonForwardProcess(
+        return newtonForwardProcess(
                         mQuestionHolder.getTable(), 
                         mQuestionHolder.getP_value(),
                         INITTIAL_INDEX,
@@ -38,7 +38,6 @@ public class Mathematical {
                         mQuestionHolder.getP_value()
         );
         
-        return mQuestionHolder.getNewtonForwardResult();
     }
     
     public Double applyNewtonBackward(double value){
@@ -49,7 +48,7 @@ public class Mathematical {
                         )
         );
         
-        newtonBackwardProcess(
+        return newtonBackwardProcess(
                         mQuestionHolder.getTable(), 
                         mQuestionHolder.getP_value(),
                         INITTIAL_INDEX,
@@ -58,49 +57,55 @@ public class Mathematical {
                         mQuestionHolder.getP_value()
         );
         
-        return mQuestionHolder.getNewtonBackwardResult();
     }
     
-    private void newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
+    private double newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
-            newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
+            return newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
                     result + ((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
         }else{
-            mQuestionHolder.setNewtonForwardResult(result);
+            return result;
         }
         
     }
     
-    private void newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
+    private double newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
-            newtonBackwardProcess(table, newP_Value * (pValue + index), index + 1, factorial * (index + 1),
+            return newtonBackwardProcess(table, newP_Value * (pValue + index), index + 1, factorial * (index + 1),
                     result + ((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
         }else{
-            mQuestionHolder.setNewtonBackwardResult(result);
+            return result;
         }
         
     }
     
-    public double applyNewtonError(){
-        newtonError(
+    public double applyNewtonForwardError(){
+        return newtonError(
                 mQuestionHolder.getTable().tableType(),
                 mQuestionHolder.getP_value(),
                 mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
                 mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
                 1,
                 1);
-        
-        return mQuestionHolder.getNewtonError();
     }
     
-    private void newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
+    public double applyNewtonBackwordError(){
+        return newtonError(
+                1,
+                mQuestionHolder.getP_value(),
+                mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
+                mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                1,
+                1);
+    }
+    
+    private double newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
         if(nNew <= n){
-            newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
+            return newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
         }else{
-            result = result * (deltaValue * pValue/(n + 1));
-            mQuestionHolder.setNewtonError(result);
+            return result * (deltaValue * pValue/(n + 1));
         }
     }
     

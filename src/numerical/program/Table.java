@@ -129,4 +129,10 @@ public class Table {
         return new Pair<>(deltaValue, (mTable.size() - (index-1)) - 2 );
         
     }
+
+    public ArrayList<Double[]> getTableAsArrayList() {
+        return mTable;
+    }
+    
+    
 }
