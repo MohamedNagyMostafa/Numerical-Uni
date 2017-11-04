@@ -5,6 +5,8 @@
  */
 package numerical.program;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+
 /**
  *
  * @author mohamednagy
@@ -87,7 +89,7 @@ public class Mathematical {
                 mQuestionHolder.getP_value(),
                 mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
                 mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
-                mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                1,
                 1);
         
         return mQuestionHolder.getNewtonError();
@@ -97,7 +99,7 @@ public class Mathematical {
         if(nNew <= n){
             newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
         }else{
-            result = result * (deltaValue/(n + 1));
+            result = result * (deltaValue * pValue/(n + 1));
             mQuestionHolder.setNewtonError(result);
         }
     }
