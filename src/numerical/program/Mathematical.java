@@ -5,7 +5,8 @@
  */
 package numerical.program;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+import sun.net.www.MimeTable;
+
 
 /**
  *
@@ -101,6 +102,29 @@ public class Mathematical {
                 1);
     }
     
+    public double applyLagrangeProcess(double value){
+        double start = 0;
+        return lagrangeProcess(value, mQuestionHolder.getTable().xValuesNumber(), start);
+    }
+    
+    private double lagrangeProcess(double xValue, int termsNumber, double start){
+        if(termsNumber > 0){
+            double f1 = 1;
+            double f2 = 1;
+            for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
+                if(i == termsNumber - 1)
+                    continue;
+                f1 *= (xValue - mQuestionHolder.getTable().xValue(i));
+                f2 *= (mQuestionHolder.getTable().xValue(termsNumber - 1) -
+                        mQuestionHolder.getTable().xValue(i));
+            }
+            return lagrangeProcess(xValue, termsNumber - 1, start +
+                    ((f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1)));
+        }else{
+            return start;
+        }   
+    }
+    
     private double newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
         if(nNew <= n){
             return newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
@@ -113,5 +137,4 @@ public class Mathematical {
         return (value - xNode)/ distance;
     }
     
-   
 }

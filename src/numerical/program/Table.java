@@ -5,10 +5,8 @@
  */
 package numerical.program;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.util.ArrayList;
 import javafx.util.Pair;
-import org.omg.CORBA.ORB;
 
 /**
  *
@@ -28,6 +26,7 @@ public class Table {
     }
     
     private void init(Double[] fxValues){
+        // table type... equeal, unequal.
         setTableType();
         switch(mTableType){
             case EQUAL_TABLE:
@@ -36,8 +35,7 @@ public class Table {
             case UNEQUAL_TABLE:
                 unequalTableProcess(fxValues);
                 break;
-        }
-       
+        }   
     }
     
     private void setTableType(){
@@ -51,11 +49,14 @@ public class Table {
         }
         mTableType = EQUAL_TABLE;
     }
-    
+    /**
+     * Set Table Delta As Unequal Method
+     * @param fxValues 
+     */
     private void unequalTableProcess(Double[] fxValues){
         mTable = new ArrayList<>();
         mTable.add(fxValues);
-        
+    
         for(int node = 0 ; node < m_xValues.length - 1; node++){
             
             Double[] column = new Double[mTable.get(node).length - 1];
@@ -63,13 +64,14 @@ public class Table {
             for(int nodeCol = 0; nodeCol < column.length; nodeCol++){
                 column[nodeCol] = (mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol])/
                         (m_xValues[mTable.size() + nodeCol] - m_xValues[nodeCol]);
-                Util.println(column[nodeCol] + " - ");
             }
-            Util.println("done");
             mTable.add(column);
         }
     }
-
+    /**
+     * Set Table Delta As equal Method
+     * @param fxValues 
+     */
     private void equalTableProcess(Double[] fxValues){
         mTable = new ArrayList<>();
         mTable.add(fxValues);
@@ -101,6 +103,13 @@ public class Table {
     
     public Double xValue(int xIndex){
         return m_xValues[xIndex];
+    }
+    
+    public int xValuesNumber(){
+        return m_xValues.length;
+    }
+    public Double fxValue(int xIndex){
+        return mTable.get(0)[xIndex];
     }
     
     public Double max_xValue(){
