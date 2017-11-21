@@ -29,8 +29,6 @@ public class QuestionHolder {
         return mP_value;
     }
 
-    
-    
     public Table getTable() {
         return mTable;
     }
