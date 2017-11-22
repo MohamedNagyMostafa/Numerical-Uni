@@ -6,6 +6,9 @@
 package numerical.program;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util.println;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javafx.util.Pair;
 
@@ -40,12 +43,11 @@ public class Table {
     }
     
     private void setTableType(){
-        double diff = m_xValues[1] - m_xValues[0];
-        Util.println("v1 " + m_xValues[1] + " v2 " + m_xValues[0]+ "diff " + diff);
+        DecimalFormat decimalFormat = new DecimalFormat("#0.000000000");
+        double diff = Double.valueOf(decimalFormat.format(m_xValues[1] - m_xValues[0]));
         for(int node = 1 ; node < m_xValues.length - 1 ; node++){
-            if(diff != (m_xValues[node + 1] - m_xValues[node])){
+            if(Double.valueOf(decimalFormat.format(m_xValues[node + 1]- m_xValues[node])) != diff){
                 mTableType = UNEQUAL_TABLE;
-                Util.println("Not equal " + m_xValues[node + 1] + " and" + m_xValues[node] + " result" + (m_xValues[node + 1] - m_xValues[node]));
                 return;
             }
         }
@@ -147,6 +149,5 @@ public class Table {
     public ArrayList<Double[]> getTableAsArrayList() {
         return mTable;
     }
-    
-    
+   
 }
