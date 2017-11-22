@@ -28,10 +28,9 @@ public class NumericalProgram {
         
         Table table = new Table(data.getKey(), data.getValue());
         QuestionHolder questionHolder = new QuestionHolder(table);
-        Mathematical mathematical = new Mathematical(questionHolder);
-        ef.writeFile(questionHolder.getTable().getTableAsArrayList());
-        Util.println("newton lagrange : " + mathematical.applyLagrangeProcess(9));
-        
+        Iteration iteration = new Iteration(questionHolder);
+                ef.writeFile(questionHolder.getTable().getTableAsArrayList());
+        Util.println(" value L " + (iteration.apply(-3, 5)));
     }
  
     

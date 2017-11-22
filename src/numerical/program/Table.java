@@ -5,6 +5,7 @@
  */
 package numerical.program;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.util.ArrayList;
 import javafx.util.Pair;
 
@@ -40,10 +41,11 @@ public class Table {
     
     private void setTableType(){
         double diff = m_xValues[1] - m_xValues[0];
-        
+        Util.println("v1 " + m_xValues[1] + " v2 " + m_xValues[0]+ "diff " + diff);
         for(int node = 1 ; node < m_xValues.length - 1 ; node++){
             if(diff != (m_xValues[node + 1] - m_xValues[node])){
                 mTableType = UNEQUAL_TABLE;
+                Util.println("Not equal " + m_xValues[node + 1] + " and" + m_xValues[node] + " result" + (m_xValues[node + 1] - m_xValues[node]));
                 return;
             }
         }
@@ -93,7 +95,10 @@ public class Table {
     }
     
     public Double deltaNodeValue(int deltaNumber){
-        return mTable.get(deltaNumber)[0];
+        if(deltaNumber < mTable.size())
+            return mTable.get(deltaNumber)[0];
+        else 
+            return null;
     }
     
     public Double inverseDeltaValue(int deltaNumber){

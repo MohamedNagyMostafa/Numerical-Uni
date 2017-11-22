@@ -5,81 +5,16 @@
  */
 package numerical.program;
 
-import sun.net.www.MimeTable;
-
-
 /**
  *
  * @author mohamednagy
  */
-public class Mathematical {
+public abstract class Mathematical implements Numerical{
   
-    private final QuestionHolder mQuestionHolder;
-    private static final short INITTIAL_INDEX = 1;
-    private static final short INITIAL_FACTORIAL = 1; 
+    protected final QuestionHolder mQuestionHolder;
     
     public Mathematical(QuestionHolder questionHolder){
         mQuestionHolder = questionHolder;
-    }
-    
-    public Double applyNewtonForward(double value){
-        mQuestionHolder.setP_value(calculateP(
-                                value,
-                                mQuestionHolder.getTable().xValue(0),
-                                mQuestionHolder.getTable().distanceEqual()
-                        )
-        );
-        
-        return newtonForwardProcess(
-                        mQuestionHolder.getTable(), 
-                        mQuestionHolder.getP_value(),
-                        INITTIAL_INDEX,
-                        INITIAL_FACTORIAL,
-                        mQuestionHolder.getTable().deltaNodeValue(0),
-                        mQuestionHolder.getP_value()
-        );
-        
-    }
-    
-    public Double applyNewtonBackward(double value){
-        mQuestionHolder.setP_value(calculateP(
-                                value,
-                                mQuestionHolder.getTable().max_xValue(),
-                                mQuestionHolder.getTable().distanceEqual()
-                        )
-        );
-        
-        return newtonBackwardProcess(
-                        mQuestionHolder.getTable(), 
-                        mQuestionHolder.getP_value(),
-                        INITTIAL_INDEX,
-                        INITIAL_FACTORIAL,
-                        mQuestionHolder.getTable().inverseDeltaValue(0),
-                        mQuestionHolder.getP_value()
-        );
-        
-    }
-    
-    private double newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
-        
-        if(table.containDelta(index)){
-            return newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
-                    result + ((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
-        }else{
-            return result;
-        }
-        
-    }
-    
-    private double newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
-        
-        if(table.containDelta(index)){
-            return newtonBackwardProcess(table, newP_Value * (pValue + index), index + 1, factorial * (index + 1),
-                    result + ((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
-        }else{
-            return result;
-        }
-        
     }
     
     public double applyNewtonForwardError(){
@@ -101,30 +36,7 @@ public class Mathematical {
                 1,
                 1);
     }
-    
-    public double applyLagrangeProcess(double value){
-        double start = 0;
-        return lagrangeProcess(value, mQuestionHolder.getTable().xValuesNumber(), start);
-    }
-    
-    private double lagrangeProcess(double xValue, int termsNumber, double start){
-        if(termsNumber > 0){
-            double f1 = 1;
-            double f2 = 1;
-            for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
-                if(i == termsNumber - 1)
-                    continue;
-                f1 *= (xValue - mQuestionHolder.getTable().xValue(i));
-                f2 *= (mQuestionHolder.getTable().xValue(termsNumber - 1) -
-                        mQuestionHolder.getTable().xValue(i));
-            }
-            return lagrangeProcess(xValue, termsNumber - 1, start +
-                    ((f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1)));
-        }else{
-            return start;
-        }   
-    }
-    
+     
     private double newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
         if(nNew <= n){
             return newtonError(tableType, pValue, deltaValue, n, nNew + 1, result * (pValue + (nNew * tableType))/nNew);
@@ -133,8 +45,7 @@ public class Mathematical {
         }
     }
     
-    private double calculateP(double value, double xNode, double distance){
-        return (value - xNode)/ distance;
-    }
     
+    
+   
 }
