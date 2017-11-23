@@ -28,9 +28,9 @@ public class NumericalProgram {
         
         Table table = new Table(data.getKey(), data.getValue());
         QuestionHolder questionHolder = new QuestionHolder(table);
-        Iteration iteration = new Iteration(questionHolder);
+        Lagrange lagrange = new Lagrange(questionHolder);
                 ef.writeFile(questionHolder.getTable().getTableAsArrayList());
-        Util.println(" value L " + (iteration.apply(-2, 5)));
+        Util.println(" value L " + lagrange.apply(Lagrange.INVERSE_LAGRANGE, 5));
        
     }
  

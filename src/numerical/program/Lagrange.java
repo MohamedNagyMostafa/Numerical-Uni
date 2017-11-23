@@ -5,15 +5,17 @@
  */
 package numerical.program;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+
 /**
  *
  * @author Mohamed Nagy
  */
 public class Lagrange extends Mathematical{
-    private static final int NORMAL_LAGRANGE = 0;
-    private static final int INVERSE_LAGRANGE = 1;
+    public static final int NORMAL_LAGRANGE = 0;
+    public static final int INVERSE_LAGRANGE = 1;
         
-    private Lagrange(QuestionHolder questionHolder) {
+    public Lagrange(QuestionHolder questionHolder) {
         super(questionHolder);
     }
     
@@ -42,8 +44,8 @@ public class Lagrange extends Mathematical{
                 f2 *= Converter.apply(mQuestionHolder.getTable().xValue(termsNumber - 1) -
                         mQuestionHolder.getTable().xValue(i));
             }
-            return lagrangeProcess(xValue, termsNumber - 1, start +
-                    Converter.apply((f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1)));
+            return lagrangeProcess(xValue, termsNumber - 1, Converter.apply(start +
+                    Converter.apply(Converter.apply(f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1))));
         }else{
             return start;
         }   
@@ -56,12 +58,16 @@ public class Lagrange extends Mathematical{
             for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
                 if(i == termsNumber - 1)
                     continue;
+                Util.println("f1 " + fxValue + " - " + mQuestionHolder.getTable().fxValue(i));
+                Util.println("f2 " + mQuestionHolder.getTable().fxValue(termsNumber - 1) + " - " + mQuestionHolder.getTable().fxValue(i));
                 f1 *= Converter.apply(fxValue - mQuestionHolder.getTable().fxValue(i));
                 f2 *= Converter.apply(mQuestionHolder.getTable().fxValue(termsNumber - 1) -
                         mQuestionHolder.getTable().fxValue(i));
             }
-            return lagrangeProcess(fxValue, termsNumber - 1, start +
-                    Converter.apply((f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1)));
+            Util.println("done " + termsNumber + " delta " +mQuestionHolder.getTable().xValue(termsNumber - 1) + "value " + Converter.apply(start +
+                    Converter.apply(Converter.apply(f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1))) );
+            return lagrangeInverseProcess(fxValue, termsNumber - 1, Converter.apply(start +
+                    Converter.apply(Converter.apply(f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1))));
         }else{
             return start;
         }   
