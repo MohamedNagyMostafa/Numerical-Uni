@@ -38,12 +38,12 @@ public class Lagrange extends Mathematical{
             for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
                 if(i == termsNumber - 1)
                     continue;
-                f1 *= (xValue - mQuestionHolder.getTable().xValue(i));
-                f2 *= (mQuestionHolder.getTable().xValue(termsNumber - 1) -
+                f1 *= Converter.apply(xValue - mQuestionHolder.getTable().xValue(i));
+                f2 *= Converter.apply(mQuestionHolder.getTable().xValue(termsNumber - 1) -
                         mQuestionHolder.getTable().xValue(i));
             }
             return lagrangeProcess(xValue, termsNumber - 1, start +
-                    ((f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1)));
+                    Converter.apply((f1/f2)* mQuestionHolder.getTable().fxValue(termsNumber - 1)));
         }else{
             return start;
         }   
@@ -56,12 +56,12 @@ public class Lagrange extends Mathematical{
             for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
                 if(i == termsNumber - 1)
                     continue;
-                f1 *= (fxValue - mQuestionHolder.getTable().fxValue(i));
-                f2 *= (mQuestionHolder.getTable().fxValue(termsNumber - 1) -
+                f1 *= Converter.apply(fxValue - mQuestionHolder.getTable().fxValue(i));
+                f2 *= Converter.apply(mQuestionHolder.getTable().fxValue(termsNumber - 1) -
                         mQuestionHolder.getTable().fxValue(i));
             }
             return lagrangeProcess(fxValue, termsNumber - 1, start +
-                    ((f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1)));
+                    Converter.apply((f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1)));
         }else{
             return start;
         }   

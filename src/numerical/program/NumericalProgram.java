@@ -30,7 +30,8 @@ public class NumericalProgram {
         QuestionHolder questionHolder = new QuestionHolder(table);
         Iteration iteration = new Iteration(questionHolder);
                 ef.writeFile(questionHolder.getTable().getTableAsArrayList());
-        Util.println(" value L " + (iteration.apply(-3, 5)));
+        Util.println(" value L " + (iteration.apply(-2, 5)));
+       
     }
  
     

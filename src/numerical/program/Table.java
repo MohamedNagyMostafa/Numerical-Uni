@@ -43,10 +43,9 @@ public class Table {
     }
     
     private void setTableType(){
-        DecimalFormat decimalFormat = new DecimalFormat("#0.000000000");
-        double diff = Double.valueOf(decimalFormat.format(m_xValues[1] - m_xValues[0]));
+        double diff = Converter.apply(m_xValues[1] - m_xValues[0]);
         for(int node = 1 ; node < m_xValues.length - 1 ; node++){
-            if(Double.valueOf(decimalFormat.format(m_xValues[node + 1]- m_xValues[node])) != diff){
+            if(Converter.apply(m_xValues[node + 1]- m_xValues[node]) != diff){
                 mTableType = UNEQUAL_TABLE;
                 return;
             }
@@ -66,8 +65,8 @@ public class Table {
             Double[] column = new Double[mTable.get(node).length - 1];
             
             for(int nodeCol = 0; nodeCol < column.length; nodeCol++){
-                column[nodeCol] = (mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol])/
-                        (m_xValues[mTable.size() + nodeCol] - m_xValues[nodeCol]);
+                column[nodeCol] = Converter.apply(Converter.apply(mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol])/
+                        Converter.apply(m_xValues[mTable.size() + nodeCol] - m_xValues[nodeCol]));
             }
             mTable.add(column);
         }
@@ -85,7 +84,7 @@ public class Table {
             Double[] column = new Double[mTable.get(node).length - 1];
             
             for(int nodeCol = 0; nodeCol < column.length; nodeCol++){
-                column[nodeCol] = mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol];
+                column[nodeCol] = Converter.apply(mTable.get(node)[nodeCol + 1] - mTable.get(node)[nodeCol]);
             }
             
             mTable.add(column);

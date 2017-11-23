@@ -63,8 +63,8 @@ public class Newton extends Mathematical{
     private double newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
-            return newtonForwardProcess(table, newP_Value * (pValue - index), index + 1, factorial * (index + 1),
-                    result + ((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
+            return newtonForwardProcess(table, Converter.apply(newP_Value * (pValue - index)), index + 1, factorial * (index + 1),
+                    result + Converter.apply((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
         }else{
             return result;
         }
@@ -74,8 +74,8 @@ public class Newton extends Mathematical{
     private double newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
-            return newtonBackwardProcess(table, newP_Value * (pValue + index), index + 1, factorial * (index + 1),
-                    result + ((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
+            return newtonBackwardProcess(table, Converter.apply(newP_Value * (pValue + index)), index + 1, factorial * (index + 1),
+                    result + Converter.apply((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
         }else{
             return result;
         }
@@ -83,7 +83,7 @@ public class Newton extends Mathematical{
     }
     
     private double calculateP(double value, double xNode, double distance){
-        return (value - xNode)/ distance;
+        return Converter.apply((value - xNode)/ distance);
     }
 
     @Override
