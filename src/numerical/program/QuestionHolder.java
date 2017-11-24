@@ -5,8 +5,6 @@
  */
 package numerical.program;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author mohamednagy
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 public class QuestionHolder {
  
     private Double mP_value;
-    private Table mTable;
+    private final Table mTable;
     
     public QuestionHolder(Table table){
         mTable = table;

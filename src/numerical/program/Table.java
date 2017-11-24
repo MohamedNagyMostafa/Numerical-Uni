@@ -5,10 +5,6 @@
  */
 package numerical.program;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util.println;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javafx.util.Pair;
 
@@ -22,7 +18,7 @@ public class Table {
     
     private short mTableType;
     private ArrayList<Double[]> mTable;
-    private Double[] m_xValues;
+    private final Double[] m_xValues;
     
     public Table(Double[] xValues, Double[] fxValues){
         m_xValues = xValues;

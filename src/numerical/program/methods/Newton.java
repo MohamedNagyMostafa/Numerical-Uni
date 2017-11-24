@@ -3,7 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package numerical.program;
+package numerical.program.methods;
+
+import numerical.program.Converter;
+import numerical.program.QuestionHolder;
+import numerical.program.Table;
 
 /**
  *
@@ -98,4 +102,50 @@ public class Newton extends Mathematical{
                 return 0.0;
         }
     }
+    
+    static class Error extends OriginalError{
+        
+        public static double apply(int type){
+            switch(type){
+                case NEWTON_BACKWARD:
+                    return applyNewtonBackwordError();
+                case NEWTON_FORWARD:
+                    return applyNewtonForwardError();
+            }
+            return -1;
+        }
+        
+        public static double applyTrunctionError(double xValue, double exactDifferentiation){
+            return trunctionError(mQuestionHolder, exactDifferentiation, xValue);
+        }
+        
+        private static double applyNewtonForwardError(){
+            return newtonError(
+                    mQuestionHolder.getTable().tableType(),
+                    mQuestionHolder.getP_value(),
+                    mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
+                    mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                    1,
+                    1);
+        }
+
+        private static double applyNewtonBackwordError(){
+            return newtonError(
+                    1,
+                    mQuestionHolder.getP_value(),
+                    mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
+                    mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                    1,
+                    1);
+        }
+
+        private static double newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
+            if(nNew <= n){
+                return newtonError(tableType, pValue, deltaValue, n, nNew + 1, Converter.apply(Converter.apply(result * Converter.apply(pValue + (nNew * tableType)))/nNew));
+            }else{
+                return Converter.apply(result * Converter.apply(deltaValue * Converter.apply(pValue/(n + 1))));
+            }
+        }
+    }
+    
 }

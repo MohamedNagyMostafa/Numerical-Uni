@@ -5,6 +5,7 @@
  */
 package numerical.program;
 
+import numerical.program.methods.Lagrange;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.io.File;
 import java.io.IOException;

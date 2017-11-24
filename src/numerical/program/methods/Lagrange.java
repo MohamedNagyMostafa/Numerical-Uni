@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package numerical.program;
+package numerical.program.methods;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+import numerical.program.Converter;
+import numerical.program.QuestionHolder;
+
 
 /**
  *
@@ -58,18 +60,22 @@ public class Lagrange extends Mathematical{
             for(int i = 0; i < mQuestionHolder.getTable().xValuesNumber(); i++){
                 if(i == termsNumber - 1)
                     continue;
-                Util.println("f1 " + fxValue + " - " + mQuestionHolder.getTable().fxValue(i));
-                Util.println("f2 " + mQuestionHolder.getTable().fxValue(termsNumber - 1) + " - " + mQuestionHolder.getTable().fxValue(i));
                 f1 *= Converter.apply(fxValue - mQuestionHolder.getTable().fxValue(i));
                 f2 *= Converter.apply(mQuestionHolder.getTable().fxValue(termsNumber - 1) -
                         mQuestionHolder.getTable().fxValue(i));
             }
-            Util.println("done " + termsNumber + " delta " +mQuestionHolder.getTable().xValue(termsNumber - 1) + "value " + Converter.apply(start +
-                    Converter.apply(Converter.apply(f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1))) );
             return lagrangeInverseProcess(fxValue, termsNumber - 1, Converter.apply(start +
                     Converter.apply(Converter.apply(f1/f2)* mQuestionHolder.getTable().xValue(termsNumber - 1))));
         }else{
             return start;
         }   
+    }
+    
+    static class Error extends OriginalError{
+        
+        public static double applyTrunctionError(double xValue, double differentiationExact){
+            return trunctionError(mQuestionHolder, differentiationExact, xValue);
+        }
+        
     }
 }
