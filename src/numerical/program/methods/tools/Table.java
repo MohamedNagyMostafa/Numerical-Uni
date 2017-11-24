@@ -13,8 +13,8 @@ import javafx.util.Pair;
  * @author mohamednagy
  */
 public class Table {
-    private static final short EQUAL_TABLE = -1;
-    private static final short UNEQUAL_TABLE = 1;
+    public static final short EQUAL_TABLE = -1;
+    public static final short UNEQUAL_TABLE = 1;
     
     private short mTableType;
     private ArrayList<Double[]> mTable;

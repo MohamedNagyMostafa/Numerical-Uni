@@ -22,6 +22,10 @@ public class LogField {
     public static final String TRUNCTION_ERROR = "Trunction Error : ";
     public static final String NEWTON_ERROR = "Newton Error : ";
     public static final String EXACT_APPROXIMATE_ERROR = "Exact Approximate Error: ";
+    public static final String FILE_IMPORT_SUCCESS = "File is imported";
+    public static final String FILE_IMPORT_CANCEL = "File is cancelled";
+    public static final String FILE_CAN_NOT_IMPORT = "File is not imported";
+    public static final String TABLE_CREATED = "Table file is created in location ";
     
     private final int processId;
     private final JTextArea logFieldArea;
@@ -38,4 +42,13 @@ public class LogField {
     public void addMessage(String message, double value){
         logFieldArea.setText(logFieldArea.getText() + "Process " + processId + "|| " + message + value + "\n");
     }
+    
+    public void addMessage(String message, String value){
+        logFieldArea.setText(logFieldArea.getText() + "Process " + processId + "|| " + message + value + "\n");
+    }
+    
+    public void addMessage(String message){
+        logFieldArea.setText(logFieldArea.getText() + "Process " + processId + "|| " + message + "\n");
+    }
 }
+

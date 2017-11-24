@@ -6,8 +6,15 @@
 package numerical.program;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.util.Pair;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import numerical.program.methods.tools.QuestionHolder;
+import numerical.program.methods.tools.Table;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 /**
  *
@@ -16,13 +23,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class GUI extends javax.swing.JFrame {
 
     private File file;
+    private QuestionHolder questionHolder;
     /**
      * Creates new form GUI
      */
     public GUI() {
         initComponents();
+
     }
 
+    private void handlingFile() throws IOException, InvalidFormatException{
+        logField.setText("aa");
+
+        LogField log = new LogField(1, this.logField);
+        ExcelFile ef = new ExcelFile(new File("C:\\Users\\Mohamed Nagy\\Desktop\\data.xlsx"));
+        Pair<Double[], Double[]> data = ef.readFile();
+       
+        Table table = new Table(data.getKey(), data.getValue());
+        questionHolder = new QuestionHolder(table);
+        
+        if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
+            originalRadioButton.setEnabled(true);
+            inverseRadioButton.setEnabled(true);
+            log.addMessage(LogField.FILE_IMPORT_SUCCESS, file.getAbsolutePath());
+        }else{
+            log.addMessage(LogField.FILE_IMPORT_CANCEL, file.getAbsolutePath());
+            originalRadioButton.setEnabled(true);
+        }
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -143,7 +172,6 @@ public class GUI extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(50, 208, 138));
         jLabel4.setText("Error:");
 
-        logField.setEditable(false);
         logField.setColumns(20);
         logField.setRows(5);
         jScrollPane1.setViewportView(logField);
@@ -352,7 +380,6 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_newtonForwardCheckboxActionPerformed
 
     private void importFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importFileButtonActionPerformed
-        // TODO add your handling code here:
         
     }//GEN-LAST:event_importFileButtonActionPerformed
 
@@ -366,13 +393,22 @@ public class GUI extends javax.swing.JFrame {
         
         int result = fileChooser.showOpenDialog(jPanel1);
         
-        if(result == JFileChooser.APPROVE_OPTION){
+        if(result == JFileChooser.APPROVE_OPTION ){
             file = fileChooser.getSelectedFile();
             importFileLabel.setText(file.getName());
-        }else{
+            progressBar.setValue(0);
+            try {
+            // TODO add your handling code here:
+                handlingFile();
+            } catch (IOException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidFormatException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else if(file == null){
             importFileLabel.setText("No file is selected");
         }
-        progressBar.setValue(0);
+        
     }//GEN-LAST:event_importFileButtonMouseClicked
 
     private void originalRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalRadioButtonActionPerformed

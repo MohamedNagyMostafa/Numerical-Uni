@@ -52,7 +52,7 @@ public class ExcelFile {
                 fxData.toArray(new Double[fxData.size()]));
     }
     
-    public void writeFile(ArrayList<Double[]> data) throws FileNotFoundException, IOException{
+    public String writeFile(ArrayList<Double[]> data) throws FileNotFoundException, IOException{
         XSSFWorkbook xSSFWorkbook = new XSSFWorkbook();
         
         XSSFSheet xSSFSheet = xSSFWorkbook.createSheet();
@@ -84,6 +84,8 @@ public class ExcelFile {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             xSSFWorkbook.write(fileOutputStream);
         }
+        
+        return file.getAbsolutePath();
     }
     
 }
