@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package numerical.program;
+package numerical.program.methods.tools;
+
+import numerical.program.methods.tools.Table;
 
 /**
  *

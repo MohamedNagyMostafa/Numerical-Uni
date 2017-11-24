@@ -5,12 +5,17 @@
  */
 package numerical.program;
 
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Mohamed Nagy
  */
 public class GUI extends javax.swing.JFrame {
 
+    private File file;
     /**
      * Creates new form GUI
      */
@@ -28,135 +33,179 @@ public class GUI extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox6 = new javax.swing.JCheckBox();
-        jCheckBox7 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        importFileLabel = new javax.swing.JLabel();
+        originalRadioButton = new javax.swing.JRadioButton();
+        inverseRadioButton = new javax.swing.JRadioButton();
+        iterationCheckbox = new javax.swing.JCheckBox();
+        newtonForwardCheckbox = new javax.swing.JCheckBox();
+        lagrangeCheckbox = new javax.swing.JCheckBox();
+        trunctionErrorCheckbox = new javax.swing.JCheckBox();
+        exactApproximateErrorCheckbox = new javax.swing.JCheckBox();
+        newtonErrorCheckbox = new javax.swing.JCheckBox();
+        newtonBackwardCheckbox = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jButton2 = new javax.swing.JButton();
+        logField = new javax.swing.JTextArea();
+        progressBar = new javax.swing.JProgressBar();
+        startButton = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        importFileButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Numerical");
         setBackground(new java.awt.Color(255, 51, 51));
         setBounds(new java.awt.Rectangle(0, 0, 5, 5));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
 
         jPanel1.setBackground(java.awt.SystemColor.controlLtHighlight);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(50, 208, 138));
-        jLabel1.setText("File Name");
+        importFileLabel.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
+        importFileLabel.setForeground(new java.awt.Color(50, 208, 138));
+        importFileLabel.setText("File Name");
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jRadioButton1.setForeground(new java.awt.Color(0, 197, 202));
-        jRadioButton1.setText("Original ");
-        jRadioButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jRadioButton2.setForeground(new java.awt.Color(0, 197, 202));
-        jRadioButton2.setText("Inverse");
-
-        buttonGroup3.add(jCheckBox3);
-        jCheckBox3.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox3.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox3.setText("Iteration");
-        jCheckBox3.setEnabled(false);
-
-        buttonGroup3.add(jCheckBox1);
-        jCheckBox1.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox1.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox1.setText("Newton Forward");
-        jCheckBox1.setEnabled(false);
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(originalRadioButton);
+        originalRadioButton.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        originalRadioButton.setForeground(new java.awt.Color(0, 197, 202));
+        originalRadioButton.setText("Original ");
+        originalRadioButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        originalRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                originalRadioButtonActionPerformed(evt);
             }
         });
 
-        buttonGroup3.add(jCheckBox4);
-        jCheckBox4.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox4.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox4.setText("Lagrange");
-        jCheckBox4.setEnabled(false);
+        buttonGroup1.add(inverseRadioButton);
+        inverseRadioButton.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        inverseRadioButton.setForeground(new java.awt.Color(0, 197, 202));
+        inverseRadioButton.setText("Inverse");
+        inverseRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inverseRadioButtonActionPerformed(evt);
+            }
+        });
 
-        buttonGroup2.add(jCheckBox6);
-        jCheckBox6.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox6.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox6.setText("Trunction Error");
-        jCheckBox6.setEnabled(false);
+        iterationCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        iterationCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        iterationCheckbox.setText("Iteration");
+        iterationCheckbox.setEnabled(false);
 
-        buttonGroup2.add(jCheckBox7);
-        jCheckBox7.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox7.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox7.setText("Exact Approximate Error");
-        jCheckBox7.setEnabled(false);
+        newtonForwardCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        newtonForwardCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        newtonForwardCheckbox.setText("Newton Forward");
+        newtonForwardCheckbox.setEnabled(false);
+        newtonForwardCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newtonForwardCheckboxActionPerformed(evt);
+            }
+        });
 
-        buttonGroup2.add(jCheckBox5);
-        jCheckBox5.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox5.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox5.setText("Newton Error");
-        jCheckBox5.setEnabled(false);
+        lagrangeCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        lagrangeCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        lagrangeCheckbox.setText("Lagrange");
+        lagrangeCheckbox.setEnabled(false);
 
-        buttonGroup3.add(jCheckBox2);
-        jCheckBox2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jCheckBox2.setForeground(new java.awt.Color(0, 197, 202));
-        jCheckBox2.setText("Newton Backward");
-        jCheckBox2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jCheckBox2.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
-        jCheckBox2.setEnabled(false);
+        trunctionErrorCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        trunctionErrorCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        trunctionErrorCheckbox.setText("Trunction Error");
+        trunctionErrorCheckbox.setEnabled(false);
+
+        exactApproximateErrorCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        exactApproximateErrorCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        exactApproximateErrorCheckbox.setText("Exact Approximate Error");
+        exactApproximateErrorCheckbox.setEnabled(false);
+
+        newtonErrorCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        newtonErrorCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        newtonErrorCheckbox.setText("Newton Error");
+        newtonErrorCheckbox.setEnabled(false);
+
+        newtonBackwardCheckbox.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        newtonBackwardCheckbox.setForeground(new java.awt.Color(0, 197, 202));
+        newtonBackwardCheckbox.setText("Newton Backward");
+        newtonBackwardCheckbox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        newtonBackwardCheckbox.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        newtonBackwardCheckbox.setEnabled(false);
+        newtonBackwardCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newtonBackwardCheckboxActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(50, 208, 138));
         jLabel4.setText("Error:");
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        logField.setEditable(false);
+        logField.setColumns(20);
+        logField.setRows(5);
+        jScrollPane1.setViewportView(logField);
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 186, 212));
-        jButton2.setText("Start");
-        jButton2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
-        jButton2.setBorderPainted(false);
-        jButton2.setEnabled(false);
+        startButton.setBackground(new java.awt.Color(255, 255, 255));
+        startButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        startButton.setForeground(new java.awt.Color(0, 186, 212));
+        startButton.setText("Start");
+        startButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
+        startButton.setBorderPainted(false);
+        startButton.setEnabled(false);
 
         jLabel5.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(50, 208, 138));
         jLabel5.setText("Settings:");
 
-        jButton4.setBackground(new java.awt.Color(255, 255, 255));
-        jButton4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 186, 212));
-        jButton4.setText("Import File");
-        jButton4.setActionCommand("");
-        jButton4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
-        jButton4.setBorderPainted(false);
-        jButton4.setEnabled(false);
+        importFileButton.setBackground(new java.awt.Color(255, 255, 255));
+        importFileButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        importFileButton.setForeground(new java.awt.Color(0, 186, 212));
+        importFileButton.setText("Import File");
+        importFileButton.setActionCommand("");
+        importFileButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
+        importFileButton.setBorderPainted(false);
+        importFileButton.setEnabled(false);
+        importFileButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                importFileButtonMouseClicked(evt);
+            }
+        });
+        importFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importFileButtonActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(50, 208, 138));
         jLabel6.setText("Technique");
+
+        jTextField1.setForeground(new java.awt.Color(71, 134, 215));
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("0");
+        jTextField1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(50, 208, 138)));
+        jTextField1.setCaretColor(new java.awt.Color(238, 14, 14));
+        jTextField1.setEnabled(false);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jTextField2.setForeground(new java.awt.Color(71, 134, 215));
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField2.setText("0");
+        jTextField2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(50, 208, 138)));
+        jTextField2.setCaretColor(new java.awt.Color(238, 14, 14));
+        jTextField2.setEnabled(false);
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -167,39 +216,39 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox5)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox2)
-                                    .addComponent(jCheckBox7)
-                                    .addComponent(jCheckBox4))
-                                .addGap(47, 47, 47)
+                                    .addComponent(newtonBackwardCheckbox)
+                                    .addComponent(exactApproximateErrorCheckbox)
+                                    .addComponent(lagrangeCheckbox)
+                                    .addComponent(trunctionErrorCheckbox))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox3)
-                                    .addComponent(jCheckBox6)
-                                    .addComponent(jCheckBox1)))))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(47, 47, 47)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(iterationCheckbox)
+                                            .addComponent(newtonForwardCheckbox)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(45, 45, 45))))
+                            .addComponent(newtonErrorCheckbox)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
-                        .addComponent(jRadioButton1)
+                        .addComponent(originalRadioButton)
                         .addGap(47, 47, 47)
-                        .addComponent(jRadioButton2)))
+                        .addComponent(inverseRadioButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(62, 62, 62)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(importFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(importFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,51 +265,66 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
+                    .addComponent(importFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1))
+                    .addComponent(inverseRadioButton)
+                    .addComponent(originalRadioButton))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                    .addComponent(newtonForwardCheckbox)
+                    .addComponent(newtonBackwardCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox3))
+                    .addComponent(lagrangeCheckbox)
+                    .addComponent(iterationCheckbox))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBox5)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox7)
-                    .addComponent(jCheckBox6))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(newtonErrorCheckbox)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(exactApproximateErrorCheckbox)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                            .addComponent(trunctionErrorCheckbox))
+                        .addGap(36, 36, 36)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -274,17 +338,76 @@ public class GUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void newtonForwardCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newtonForwardCheckboxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+        exactApproximateErrorCheckbox.setEnabled(true);
+        trunctionErrorCheckbox.setEnabled(true);
+        newtonErrorCheckbox.setEnabled(true);
+    }//GEN-LAST:event_newtonForwardCheckboxActionPerformed
+
+    private void importFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importFileButtonActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_importFileButtonActionPerformed
+
+    private void importFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importFileButtonMouseClicked
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files","xlsx","excel");       
+        fileChooser.setFileFilter(filter);
+        fileChooser.setFileSelectionMode(fileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setDialogTitle("Import File");
+        
+        int result = fileChooser.showOpenDialog(jPanel1);
+        
+        if(result == JFileChooser.APPROVE_OPTION){
+            file = fileChooser.getSelectedFile();
+            importFileLabel.setText(file.getName());
+        }else{
+            importFileLabel.setText("No file is selected");
+        }
+        progressBar.setValue(0);
+    }//GEN-LAST:event_importFileButtonMouseClicked
+
+    private void originalRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalRadioButtonActionPerformed
+        // TODO add your handling code here:
+        iterationCheckbox.setEnabled(false);
+        iterationCheckbox.setSelected(false);
+        lagrangeCheckbox.setEnabled(true);
+        newtonForwardCheckbox.setEnabled(true);
+        newtonBackwardCheckbox.setEnabled(true);
+    }//GEN-LAST:event_originalRadioButtonActionPerformed
+
+    private void inverseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inverseRadioButtonActionPerformed
+        // TODO add your handling code here:
+        iterationCheckbox.setEnabled(true);
+        lagrangeCheckbox.setEnabled(true);
+        newtonForwardCheckbox.setEnabled(false);
+        newtonForwardCheckbox.setSelected(false);
+        newtonBackwardCheckbox.setEnabled(false);
+        newtonBackwardCheckbox.setSelected(false);
+    }//GEN-LAST:event_inverseRadioButtonActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void newtonBackwardCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newtonBackwardCheckboxActionPerformed
+        // TODO add your handling code here:
+        exactApproximateErrorCheckbox.setEnabled(true);
+        trunctionErrorCheckbox.setEnabled(true);
+        newtonErrorCheckbox.setEnabled(true);
+    }//GEN-LAST:event_newtonBackwardCheckboxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,29 +446,29 @@ public class GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.ButtonGroup buttonGroup3;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JCheckBox jCheckBox6;
-    private javax.swing.JCheckBox jCheckBox7;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox exactApproximateErrorCheckbox;
+    private javax.swing.JButton importFileButton;
+    private javax.swing.JLabel importFileLabel;
+    private javax.swing.JRadioButton inverseRadioButton;
+    private javax.swing.JCheckBox iterationCheckbox;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JCheckBox lagrangeCheckbox;
+    private javax.swing.JTextArea logField;
+    private javax.swing.JCheckBox newtonBackwardCheckbox;
+    private javax.swing.JCheckBox newtonErrorCheckbox;
+    private javax.swing.JCheckBox newtonForwardCheckbox;
+    private javax.swing.JRadioButton originalRadioButton;
+    private javax.swing.JProgressBar progressBar;
+    private javax.swing.JButton startButton;
+    private javax.swing.JCheckBox trunctionErrorCheckbox;
     // End of variables declaration//GEN-END:variables
 }

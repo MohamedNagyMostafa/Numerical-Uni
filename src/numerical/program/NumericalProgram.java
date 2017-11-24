@@ -5,6 +5,8 @@
  */
 package numerical.program;
 
+import numerical.program.methods.tools.QuestionHolder;
+import numerical.program.methods.tools.Table;
 import numerical.program.methods.Lagrange;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import java.io.File;

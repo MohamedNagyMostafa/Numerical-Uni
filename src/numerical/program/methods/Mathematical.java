@@ -5,7 +5,7 @@
  */
 package numerical.program.methods;
 
-import numerical.program.QuestionHolder;
+import numerical.program.methods.tools.QuestionHolder;
 
 /**
  *
