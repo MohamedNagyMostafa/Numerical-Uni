@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +20,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import methods.GThread;
+import numerical.program.methods.Newton;
 import numerical.program.methods.tools.QuestionHolder;
 import numerical.program.methods.tools.Table;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -39,24 +42,46 @@ public class GUI extends javax.swing.JFrame {
     }
   
 
-    private void handlingFile() throws IOException, InvalidFormatException{
-        LogField log = new LogField(2, this.logField);
-        ExcelFile excelFile = new ExcelFile(new File("C:\\Users\\Mohamed Nagy\\Desktop\\data.xlsx"));
-        Pair<Double[], Double[]> data = excelFile.readFile();
-       
-        Table table = new Table(data.getKey(), data.getValue());
-        questionHolder = new QuestionHolder(table);
+    private void handlingFile(){
+        final LogField log = new LogField(2, logField);
+        new GThread<String>() {
+            @Override
+            public String onProgress() {
+                try {
+                    log.addMessage(LogField.READING_DATA);
+                    progressBar.setValue(30);
+                    ExcelFile excelFile = new ExcelFile(new File("C:\\Users\\Mohamed Nagy\\Desktop\\data.xlsx"));
+                    Pair<Double[], Double[]> data = excelFile.readFile();
+                    progressBar.setValue(60);
+                    Table table = new Table(data.getKey(), data.getValue());
+                    progressBar.setValue(80);
+                    questionHolder = new QuestionHolder(table);
+                    
+                    return excelFile.writeFile(questionHolder.getTable().getTableAsArrayList());
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidFormatException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return LogField.FILE_CAN_NOT_IMPORT;
+            }
+
+            @Override
+            public void onFinished(String filePath) {
+                if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
+                    originalRadioButton.setEnabled(true);
+                    inverseRadioButton.setEnabled(true);
+                    log.addMessage(LogField.TABLE_TYPE_EQUAL);
+                }else{
+                    log.addMessage(LogField.TABLE_TYPE_INEQUAL);
+                    originalRadioButton.setEnabled(true);
+                }
+                log.addMessage(LogField.TABLE_CREATED, filePath);
+                progressBar.setValue(100);
+                log.addMessage(LogField.READING_DATA_COMPLETED);
+            }
+        }.start();
         
-        if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
-            originalRadioButton.setEnabled(true);
-            inverseRadioButton.setEnabled(true);
-            log.addMessage(LogField.TABLE_TYPE_EQUAL);
-        }else{
-            log.addMessage(LogField.TABLE_TYPE_INEQUAL);
-            originalRadioButton.setEnabled(true);
-        }
-        String filePath = excelFile.writeFile(questionHolder.getTable().getTableAsArrayList());
-        log.addMessage(LogField.TABLE_CREATED, filePath);
     }
     
     private void checkErrorState(){
@@ -117,10 +142,12 @@ public class GUI extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
-        exactApproximateEditText = new javax.swing.JTextField();
+        valueEditText = new javax.swing.JTextField();
         trunctionEditText = new javax.swing.JTextField();
         iterationErrorPowerEditText = new javax.swing.JTextField();
         iterationErrorPowerCheckbox = new javax.swing.JCheckBox();
+        exactApproximateEditText = new javax.swing.JTextField();
+        importFileLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Numerical");
@@ -273,25 +300,25 @@ public class GUI extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(50, 208, 138));
         jLabel6.setText("Technique");
 
-        exactApproximateEditText.setForeground(new java.awt.Color(71, 134, 215));
-        exactApproximateEditText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        exactApproximateEditText.setText("0");
-        exactApproximateEditText.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(50, 208, 138)));
-        exactApproximateEditText.setCaretColor(new java.awt.Color(238, 14, 14));
-        exactApproximateEditText.setEnabled(false);
-        exactApproximateEditText.addFocusListener(new java.awt.event.FocusAdapter() {
+        valueEditText.setForeground(new java.awt.Color(71, 134, 215));
+        valueEditText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        valueEditText.setText("0");
+        valueEditText.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(50, 208, 138)));
+        valueEditText.setCaretColor(new java.awt.Color(238, 14, 14));
+        valueEditText.setEnabled(false);
+        valueEditText.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                exactApproximateEditTextFocusGained(evt);
+                valueEditTextFocusGained(evt);
             }
         });
-        exactApproximateEditText.addActionListener(new java.awt.event.ActionListener() {
+        valueEditText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exactApproximateEditTextActionPerformed(evt);
+                valueEditTextActionPerformed(evt);
             }
         });
-        exactApproximateEditText.addKeyListener(new java.awt.event.KeyAdapter() {
+        valueEditText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                exactApproximateEditTextKeyTyped(evt);
+                valueEditTextKeyTyped(evt);
             }
         });
 
@@ -349,45 +376,78 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        exactApproximateEditText.setForeground(new java.awt.Color(71, 134, 215));
+        exactApproximateEditText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        exactApproximateEditText.setText("0");
+        exactApproximateEditText.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(50, 208, 138)));
+        exactApproximateEditText.setCaretColor(new java.awt.Color(238, 14, 14));
+        exactApproximateEditText.setEnabled(false);
+        exactApproximateEditText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                exactApproximateEditTextFocusGained(evt);
+            }
+        });
+        exactApproximateEditText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exactApproximateEditTextActionPerformed(evt);
+            }
+        });
+        exactApproximateEditText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                exactApproximateEditTextKeyTyped(evt);
+            }
+        });
+
+        importFileLabel1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        importFileLabel1.setForeground(new java.awt.Color(50, 208, 138));
+        importFileLabel1.setText("Value : ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(newtonBackwardCheckbox)
+                            .addComponent(exactApproximateErrorCheckbox)
+                            .addComponent(lagrangeCheckbox)
+                            .addComponent(trunctionErrorCheckbox))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(newtonBackwardCheckbox)
-                                    .addComponent(exactApproximateErrorCheckbox)
-                                    .addComponent(lagrangeCheckbox)
-                                    .addComponent(trunctionErrorCheckbox))
+                                    .addComponent(iterationCheckbox)
+                                    .addComponent(newtonForwardCheckbox)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(47, 47, 47)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(iterationCheckbox)
-                                            .addComponent(newtonForwardCheckbox)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(trunctionEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(exactApproximateEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(iterationErrorPowerEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(45, 45, 45))))
-                            .addComponent(newtonErrorCheckbox)
-                            .addComponent(iterationErrorPowerCheckbox)))
+                                    .addComponent(exactApproximateEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(trunctionEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(newtonErrorCheckbox)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(originalRadioButton)
-                        .addGap(47, 47, 47)
-                        .addComponent(inverseRadioButton)))
+                        .addComponent(iterationErrorPowerCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(iterationErrorPowerEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(originalRadioButton)
+                .addGap(47, 47, 47)
+                .addComponent(inverseRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(importFileLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(valueEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -410,12 +470,9 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(93, 93, 93)
+                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -432,7 +489,9 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inverseRadioButton)
-                    .addComponent(originalRadioButton))
+                    .addComponent(originalRadioButton)
+                    .addComponent(valueEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importFileLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -478,7 +537,7 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 1, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -514,14 +573,9 @@ public class GUI extends javax.swing.JFrame {
             file = fileChooser.getSelectedFile();
             importFileLabel.setText(file.getName());
             progressBar.setValue(0);
-            try {
-            // TODO add your handling code here:
-                handlingFile();
-            } catch (IOException ex) {
-                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvalidFormatException ex) {
-                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
+            handlingFile();
+    
         }else if(file == null){
             importFileLabel.setText("No file is selected");
             importLog.addMessage(LogField.FILE_IMPORT_CANCEL);
@@ -537,6 +591,7 @@ public class GUI extends javax.swing.JFrame {
         lagrangeCheckbox.setEnabled(true);
         newtonForwardCheckbox.setEnabled(true);
         newtonBackwardCheckbox.setEnabled(true);
+        valueEditText.setEnabled(true);
     }//GEN-LAST:event_originalRadioButtonActionPerformed
 
     private void inverseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inverseRadioButtonActionPerformed
@@ -547,11 +602,12 @@ public class GUI extends javax.swing.JFrame {
         newtonForwardCheckbox.setSelected(false);
         newtonBackwardCheckbox.setEnabled(false);
         newtonBackwardCheckbox.setSelected(false);
+        valueEditText.setEnabled(true);
     }//GEN-LAST:event_inverseRadioButtonActionPerformed
 
-    private void exactApproximateEditTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactApproximateEditTextActionPerformed
+    private void valueEditTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_valueEditTextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_exactApproximateEditTextActionPerformed
+    }//GEN-LAST:event_valueEditTextActionPerformed
 
     private void trunctionEditTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trunctionEditTextActionPerformed
         // TODO add your handling code here:
@@ -591,14 +647,14 @@ public class GUI extends javax.swing.JFrame {
         checkErrorSelection(trunctionEditText, trunctionErrorCheckbox.isSelected());
     }//GEN-LAST:event_trunctionErrorCheckboxActionPerformed
 
-    private void exactApproximateEditTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_exactApproximateEditTextKeyTyped
+    private void valueEditTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_valueEditTextKeyTyped
         char character = evt.getKeyChar();
-        if(exactApproximateEditText.getText().length() > 11 ||(!Character.isDigit(character) && 
-                !(character == '.' && !exactApproximateEditText.getText().contains("."))
+        if(valueEditText.getText().length() > 11 ||(!Character.isDigit(character) && 
+                !(character == '.' && !valueEditText.getText().contains("."))
                 )){
             evt.consume();
         }
-    }//GEN-LAST:event_exactApproximateEditTextKeyTyped
+    }//GEN-LAST:event_valueEditTextKeyTyped
 
     private void trunctionEditTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_trunctionEditTextKeyTyped
         // TODO add your handling code here:
@@ -620,11 +676,11 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_iterationErrorPowerEditTextKeyTyped
 
-    private void exactApproximateEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_exactApproximateEditTextFocusGained
+    private void valueEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_valueEditTextFocusGained
         // TODO add your handling code here:
-        if("0".equals(exactApproximateEditText.getText()))
-            exactApproximateEditText.setText("");
-    }//GEN-LAST:event_exactApproximateEditTextFocusGained
+        if("0".equals(valueEditText.getText()))
+            valueEditText.setText("");
+    }//GEN-LAST:event_valueEditTextFocusGained
 
     private void trunctionEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_trunctionEditTextFocusGained
         // TODO add your handling code here:
@@ -637,11 +693,51 @@ public class GUI extends javax.swing.JFrame {
         if("0".equals(iterationErrorPowerEditText.getText()))
             iterationErrorPowerEditText.setText("");
     }//GEN-LAST:event_iterationErrorPowerEditTextFocusGained
-
+    private static double progressIncrease = 0;
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
+        progressBar.setValue(0);
+        ArrayList<GThread<Double>> gThreads = new ArrayList<>();
+        final LogField processLog = new LogField(3, logField);
+        
+        
+        if(newtonBackwardCheckbox.isSelected()){
+            GThread<Double> newtonBackwGThread = new GThread<Double>() {
+                @Override
+                public Double onProgress() {
+                    return new Newton(questionHolder).apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
+                }
+
+                @Override
+                public void onFinished(Double value) {
+                    processLog.addMessage(LogField.NEWTON_BACKWARD_X, value);
+                }
+            };
+        }
+        
+        
         
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void exactApproximateEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_exactApproximateEditTextFocusGained
+        // TODO add your handling code here:
+        if("0".equals(exactApproximateEditText.getText()))
+            exactApproximateEditText.setText("");
+    }//GEN-LAST:event_exactApproximateEditTextFocusGained
+
+    private void exactApproximateEditTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactApproximateEditTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exactApproximateEditTextActionPerformed
+
+    private void exactApproximateEditTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_exactApproximateEditTextKeyTyped
+        // TODO add your handling code here:
+        char character = evt.getKeyChar();
+        if(exactApproximateEditText.getText().length() > 11 ||(!Character.isDigit(character) && 
+                !(character == '.' && !exactApproximateEditText.getText().contains("."))
+                )){
+            evt.consume();
+        }
+    }//GEN-LAST:event_exactApproximateEditTextKeyTyped
 
     
     /**
@@ -685,6 +781,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox exactApproximateErrorCheckbox;
     private javax.swing.JButton importFileButton;
     private javax.swing.JLabel importFileLabel;
+    private javax.swing.JLabel importFileLabel1;
     private javax.swing.JRadioButton inverseRadioButton;
     private javax.swing.JCheckBox iterationCheckbox;
     private javax.swing.JCheckBox iterationErrorPowerCheckbox;
@@ -707,5 +804,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton startButton;
     private javax.swing.JTextField trunctionEditText;
     private javax.swing.JCheckBox trunctionErrorCheckbox;
+    private javax.swing.JTextField valueEditText;
     // End of variables declaration//GEN-END:variables
 }
