@@ -21,9 +21,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import methods.GThread;
+import methods.ScheduleGThread;
 import numerical.program.methods.Iteration;
 import numerical.program.methods.Lagrange;
 import numerical.program.methods.Newton;
+import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
 import numerical.program.methods.tools.Table;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -270,7 +272,6 @@ public class GUI extends javax.swing.JFrame {
         startButton.setText("Start");
         startButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
         startButton.setBorderPainted(false);
-        startButton.setEnabled(false);
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
@@ -288,7 +289,6 @@ public class GUI extends javax.swing.JFrame {
         importFileButton.setActionCommand("");
         importFileButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(255, 255, 102), new java.awt.Color(255, 69, 224), new java.awt.Color(255, 51, 51), new java.awt.Color(51, 51, 255)));
         importFileButton.setBorderPainted(false);
-        importFileButton.setEnabled(false);
         importFileButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 importFileButtonMouseClicked(evt);
@@ -786,6 +786,21 @@ public class GUI extends javax.swing.JFrame {
             }
         };
     }
+
+    private GThread<Double> handleLagrangeInverseGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                return new Lagrange(questionHolder).apply(Lagrange.INVERSE_LAGRANGE, Double.valueOf(valueEditText.getText()));
+            }
+
+            @Override
+            public void onFinished(final Double value) {
+                processLog.addMessage(LogField.LAGRANGE_INVERSE_Y, value);
+                progress.increasingByOne();
+            }
+        };
+    }
     
     private GThread<Double> handleIterationGThread(final LogField processLog){
         return new GThread<Double>() {
@@ -856,9 +871,11 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         progress.clear();
         ArrayList<GThread<Double>> gThreads = new ArrayList<>();
+        int counter = 0;
         GThread<Double> newtonForwardGThread = null;
         GThread<Double> newtonBackwardGThread = null;
         GThread<Double> lagrangeGThread = null;
+        GThread<Double> lagrangeInverseGThread = null;
         GThread<Double> iterationGThread = null;
         GThread<Double> newtonForwardErrorGThread = null;
         GThread<Double> newtonBackwardErrorGThread = null;
@@ -866,36 +883,75 @@ public class GUI extends javax.swing.JFrame {
         
         final LogField processLog = new LogField(3, logField);
         
-        
-        if(newtonBackwardCheckbox.isSelected()){
-            newtonForwardGThread = handleNewtonForwardGThread(processLog);
-        }
-      
-        if(newtonForwardCheckbox.isSelected()){
-            newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
-        }
-        
-        if(lagrangeCheckbox.isSelected()){
-            lagrangeGThread = handleLagrangeGThread(processLog);
-        }
-        
-        if(iterationCheckbox.isSelected()){
-            iterationGThread = handleIterationGThread(processLog);
-        }
-        
-        if(newtonErrorCheckbox.isSelected()){
-            newtonForwardGThread = handleNewtonForwardErrorGThread(processLog);
-        }
-        
-        if(newtonErrorCheckbox.isSelected()){
-            newtonBackwardErrorGThread = handleNewtonBackwardErrorGThread(processLog);
-        }
+        if(originalRadioButton.isSelected()){
+            if(newtonBackwardCheckbox.isSelected()){
+                newtonForwardGThread = handleNewtonForwardGThread(processLog);
+                gThreads.add(newtonForwardGThread);
+                counter += increaseCounter();
+            }
+
+            if(newtonForwardCheckbox.isSelected()){
+                newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
+                gThreads.add(newtonBackwardGThread);
+                counter += increaseCounter();
+                println("" + counter);
+            }
+            
+            if(newtonErrorCheckbox.isSelected()){
+                newtonForwardErrorGThread = handleNewtonForwardErrorGThread(processLog);
+                gThreads.add(newtonForwardErrorGThread);
+                counter++;
+            }
+
+            if(newtonErrorCheckbox.isSelected()){
+                newtonBackwardErrorGThread = handleNewtonBackwardErrorGThread(processLog);
+                gThreads.add(newtonBackwardErrorGThread);
+                counter++;
+            }
+            
+            if(lagrangeCheckbox.isSelected()){
+                lagrangeGThread = handleLagrangeGThread(processLog);
+                gThreads.add(lagrangeGThread);
+                counter += increaseCounter();
+            }
+        }else if(inverseRadioButton.isSelected()){
+            if(iterationCheckbox.isSelected()){
+                iterationGThread = handleIterationGThread(processLog);
+                gThreads.add(newtonBackwardErrorGThread);
+                counter++;
+            }
+            
+            if(lagrangeCheckbox.isSelected()){
+                lagrangeInverseGThread = handleLagrangeInverseGThread(processLog);
+                gThreads.add(lagrangeInverseGThread);
+                counter++;
+            }
+        }     
         
         if(trunctionErrorCheckbox.isSelected()){
             trunctionErrorGThread = handleTrunctionErrorGThread(processLog);
+                gThreads.add(lagrangeInverseGThread);
+                counter++;
         }
+        println(""+100/counter);
+        progress.setIncreasingValue(100/counter);
+       
+        ScheduleGThread scheduleGThread = new ScheduleGThread(5, gThreads.toArray(new GThread[gThreads.size()])) {
+            @Override
+            public void onScheduleFinished() {
+                processLog.addMessage("Progress completed");
+            }
+        };
+        scheduleGThread.start();
     }//GEN-LAST:event_startButtonActionPerformed
 
+    private int increaseCounter(){
+        if(exactApproximateErrorCheckbox.isSelected()){
+            return 2;
+        }else{
+            return 1;
+        }
+    }
     private void exactApproximateEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_exactApproximateEditTextFocusGained
         // TODO add your handling code here:
         if("0".equals(exactApproximateEditText.getText()))

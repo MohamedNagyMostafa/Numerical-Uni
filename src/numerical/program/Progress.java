@@ -14,7 +14,7 @@ import javax.swing.JProgressBar;
 public class Progress {
     
     private final JProgressBar progressBar;
-    private double progressBarIncreasing;
+    private float progressBarIncreasing;
     
     public Progress(JProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -31,12 +31,12 @@ public class Progress {
         progressBarIncreasing = 0;
     }
     
-    public synchronized void setIncreasingValue(double increasing){
+    public synchronized void setIncreasingValue(float increasing){
         progressBarIncreasing = increasing;
     }
     
     public synchronized void increasingByOne(){
+        progressBar.setValue(Math.round(progressBarIncreasing));
         progressBarIncreasing += progressBarIncreasing;
-        progressBar.setValue(Integer.valueOf(String.valueOf(progressBarIncreasing)));
     }
 }
