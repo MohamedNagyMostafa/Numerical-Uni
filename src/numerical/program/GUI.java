@@ -21,6 +21,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import methods.GThread;
+import numerical.program.methods.Lagrange;
 import numerical.program.methods.Newton;
 import numerical.program.methods.tools.QuestionHolder;
 import numerical.program.methods.tools.Table;
@@ -696,7 +697,7 @@ public class GUI extends javax.swing.JFrame {
             iterationErrorPowerEditText.setText("");
     }//GEN-LAST:event_iterationErrorPowerEditTextFocusGained
 
-    private GThread<Double> handleNewtonForwardGThread(final LogField processLog){
+    private GThread<Double> handleNewtonBackwardGThread(final LogField processLog){
         return new GThread<Double>() {
                 @Override
                 public Double onProgress() {
@@ -704,14 +705,14 @@ public class GUI extends javax.swing.JFrame {
                 }
 
                 @Override
-                public void onFinished(Double value) {
+                public void onFinished(final Double value) {
                     processLog.addMessage(LogField.NEWTON_BACKWARD_X, value);
                     progress.increasingByOne();
                     if(exactApproximateErrorCheckbox.isSelected()){
                         new GThread<Double>() {
                             @Override
                             public Double onProgress() {
-                                return Newton.Error.apply(Newton.NEWTON_BACKWARD);
+                                return Newton.Error.applyExactApproximateError(value, Double.valueOf(exactApproximateEditText.getText()));
                             }
 
                             @Override
@@ -726,7 +727,7 @@ public class GUI extends javax.swing.JFrame {
             };
     }
     
-    private GThread<Double> handleNewtonBackwardGThread(final LogField processLog){
+    private GThread<Double> handleNewtonForwardGThread(final LogField processLog){
         return new GThread<Double>() {
                 @Override
                 public Double onProgress() {
@@ -734,14 +735,14 @@ public class GUI extends javax.swing.JFrame {
                 }
 
                 @Override
-                public void onFinished(Double value) {
+                public void onFinished(final Double value) {
                     processLog.addMessage(LogField.NEWTON_FORWARD_X, value);
                     progress.increasingByOne();
                     if(exactApproximateErrorCheckbox.isSelected()){
                         new GThread<Double>() {
                             @Override
                             public Double onProgress() {
-                                return Newton.Error.apply(Newton.NEWTON_FORWARD);
+                                return Newton.Error.applyExactApproximateError(value, Double.valueOf(exactApproximateEditText.getText()));
                             }
 
                             @Override
@@ -756,12 +757,45 @@ public class GUI extends javax.swing.JFrame {
             };
     }
     
+    private GThread<Double> handleLagrangeGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                return new Lagrange(questionHolder).apply(Lagrange.NORMAL_LAGRANGE, Double.valueOf(valueEditText.getText()));
+            }
+
+            @Override
+            public void onFinished(final Double value) {
+                processLog.addMessage(LogField.LAGRANGE_X, value);
+                progress.increasingByOne();
+                if(exactApproximateErrorCheckbox.isSelected()){
+                    new GThread<Double>() {
+                        @Override
+                        public Double onProgress() {
+                            return Lagrange.Error.applyExactApproximateError(value, Double.valueOf(exactApproximateEditText.getText()));
+                        }
+
+                        @Override
+                        public void onFinished(Double value) {
+                            processLog.addMessage(LogField.EXACT_APPROXIMATE_LAGRANGE_ERROR, value);
+                            progress.increasingByOne();
+                        }
+                    }.start();
+                }
+            }
+        };
+    }
+    
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         progress.clear();
         ArrayList<GThread<Double>> gThreads = new ArrayList<>();
         GThread<Double> newtonForwardGThread = null;
         GThread<Double> newtonBackwardGThread = null;
+        GThread<Double> lagrangeGThread = null;
+        GThread<Double> iterationGThread = null;
+        GThread<Double> newtonErrorGThread = null;
+        GThread<Double> trunctionErrorGThread = null;
         
         final LogField processLog = new LogField(3, logField);
         
@@ -774,8 +808,21 @@ public class GUI extends javax.swing.JFrame {
             newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
         }
         
+        if(lagrangeCheckbox.isSelected()){
+            lagrangeGThread = handleLagrangeGThread(progressLog);
+        }
         
+        if(iterationCheckbox.isSelected()){
+            iterationGThread = handleIterationGThread(progressLog);
+        }
         
+        if(newtonErrorCheckbox.isSelected()){
+            newtonErrorGThread = handleNewtonErrorGThread(progressLog);
+        }
+        
+        if(trunctionErrorCheckbox.isSelected()){
+            trunctionErrorGThread = handleTrunctionErrorGThread(processLog);
+        }
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void exactApproximateEditTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_exactApproximateEditTextFocusGained

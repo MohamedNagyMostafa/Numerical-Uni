@@ -71,7 +71,7 @@ public class Lagrange extends Mathematical{
         }   
     }
     
-    static class Error extends OriginalError{
+    public static class Error extends OriginalError{
         
         public static double applyTrunctionError(double xValue, double differentiationExact){
             return trunctionError(mQuestionHolder, differentiationExact, xValue);
