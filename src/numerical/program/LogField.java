@@ -20,7 +20,8 @@ public class LogField {
     public static final String LAGRANGE_INVERSE_Y = "Lagrange inverse y: ";
     public static final String ITERACTION = "Iteration x: ";
     public static final String TRUNCTION_ERROR = "Trunction Error : ";
-    public static final String NEWTON_ERROR = "Newton Error : ";
+    public static final String NEWTON_FORWARD_ERROR = "Newton Forwad Error : ";
+    public static final String NEWTON_BACKWARD_ERROR = "Newton Backward Error : ";
     public static final String EXACT_APPROXIMATE_NEWTON_BACKWARD_ERROR = "Exact Approximate Newton Backward Error: ";
     public static final String EXACT_APPROXIMATE_NEWTON_FORWARD_ERROR = "Exact Approximate Newton Forward Error: ";
     public static final String EXACT_APPROXIMATE_LAGRANGE_ERROR = "Exact Approximate Lagrange Error: ";

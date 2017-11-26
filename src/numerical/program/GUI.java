@@ -21,6 +21,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import methods.GThread;
+import numerical.program.methods.Iteration;
 import numerical.program.methods.Lagrange;
 import numerical.program.methods.Newton;
 import numerical.program.methods.tools.QuestionHolder;
@@ -578,7 +579,7 @@ public class GUI extends javax.swing.JFrame {
             progress.clear();
             
             handlingFile();
-    
+  
         }else if(file == null){
             importFileLabel.setText("No file is selected");
             importLog.addMessage(LogField.FILE_IMPORT_CANCEL);
@@ -786,6 +787,71 @@ public class GUI extends javax.swing.JFrame {
         };
     }
     
+    private GThread<Double> handleIterationGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                if(iterationErrorPowerCheckbox.isSelected())
+                    return new Iteration(questionHolder).apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
+                            Double.valueOf(valueEditText.getText()));
+                else
+                    return new Iteration(questionHolder).apply(2, Double.valueOf(valueEditText.getText()));
+            }
+
+            @Override
+            public void onFinished(Double t) {
+                processLog.addMessage(LogField.ITERACTION, t);
+                progress.increasingByOne();
+            }
+        };
+    }
+    
+    private GThread<Double> handleNewtonForwardErrorGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                return Newton.Error.apply(Newton.NEWTON_FORWARD);
+            }
+
+            @Override
+            public void onFinished(Double t) {
+                processLog.addMessage(LogField.NEWTON_FORWARD_ERROR);
+                progress.increasingByOne();
+            }
+        };
+    }
+    
+    private GThread<Double> handleNewtonBackwardErrorGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                return Newton.Error.apply(Newton.NEWTON_BACKWARD);
+            }
+
+            @Override
+            public void onFinished(Double t) {
+                processLog.addMessage(LogField.NEWTON_BACKWARD_ERROR);
+                progress.increasingByOne();
+            }
+        };
+    }
+    
+    private GThread<Double> handleTrunctionErrorGThread(final LogField processLog){
+        return new GThread<Double>() {
+            @Override
+            public Double onProgress() {
+                return Newton.Error.applyTrunctionError(Double.valueOf(valueEditText.getText()),
+                        Double.valueOf(trunctionEditText.getText()));
+            }
+
+            @Override
+            public void onFinished(Double t) {
+                processLog.addMessage(LogField.TRUNCTION_ERROR, t);
+                progress.increasingByOne();
+            }
+        };
+    }
+    
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         progress.clear();
@@ -794,7 +860,8 @@ public class GUI extends javax.swing.JFrame {
         GThread<Double> newtonBackwardGThread = null;
         GThread<Double> lagrangeGThread = null;
         GThread<Double> iterationGThread = null;
-        GThread<Double> newtonErrorGThread = null;
+        GThread<Double> newtonForwardErrorGThread = null;
+        GThread<Double> newtonBackwardErrorGThread = null;
         GThread<Double> trunctionErrorGThread = null;
         
         final LogField processLog = new LogField(3, logField);
@@ -809,15 +876,19 @@ public class GUI extends javax.swing.JFrame {
         }
         
         if(lagrangeCheckbox.isSelected()){
-            lagrangeGThread = handleLagrangeGThread(progressLog);
+            lagrangeGThread = handleLagrangeGThread(processLog);
         }
         
         if(iterationCheckbox.isSelected()){
-            iterationGThread = handleIterationGThread(progressLog);
+            iterationGThread = handleIterationGThread(processLog);
         }
         
         if(newtonErrorCheckbox.isSelected()){
-            newtonErrorGThread = handleNewtonErrorGThread(progressLog);
+            newtonForwardGThread = handleNewtonForwardErrorGThread(processLog);
+        }
+        
+        if(newtonErrorCheckbox.isSelected()){
+            newtonBackwardErrorGThread = handleNewtonBackwardErrorGThread(processLog);
         }
         
         if(trunctionErrorCheckbox.isSelected()){
