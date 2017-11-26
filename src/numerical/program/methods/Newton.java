@@ -103,7 +103,7 @@ public class Newton extends Mathematical{
         }
     }
     
-    static class Error extends OriginalError{
+    public static class Error extends OriginalError{
         
         public static double apply(int type){
             switch(type){

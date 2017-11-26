@@ -34,11 +34,13 @@ public class GUI extends javax.swing.JFrame {
 
     private File file;
     private QuestionHolder questionHolder;
+    private final Progress progress;
     /**
      * Creates new form GUI
      */
     public GUI() {
         initComponents();
+        progress = new Progress(progressBar);
     }
   
 
@@ -49,12 +51,12 @@ public class GUI extends javax.swing.JFrame {
             public String onProgress() {
                 try {
                     log.addMessage(LogField.READING_DATA);
-                    progressBar.setValue(30);
+                    progress.increaseBy(30);
                     ExcelFile excelFile = new ExcelFile(new File("C:\\Users\\Mohamed Nagy\\Desktop\\data.xlsx"));
                     Pair<Double[], Double[]> data = excelFile.readFile();
-                    progressBar.setValue(60);
+                    progress.increaseBy(60);
                     Table table = new Table(data.getKey(), data.getValue());
-                    progressBar.setValue(80);
+                    progress.increaseBy(80);
                     questionHolder = new QuestionHolder(table);
                     
                     return excelFile.writeFile(questionHolder.getTable().getTableAsArrayList());
@@ -77,7 +79,7 @@ public class GUI extends javax.swing.JFrame {
                     originalRadioButton.setEnabled(true);
                 }
                 log.addMessage(LogField.TABLE_CREATED, filePath);
-                progressBar.setValue(100);
+                progress.increaseBy(100);
                 log.addMessage(LogField.READING_DATA_COMPLETED);
             }
         }.start();
@@ -572,7 +574,7 @@ public class GUI extends javax.swing.JFrame {
             importLog.addMessage(LogField.FILE_IMPORT_SUCCESS);
             file = fileChooser.getSelectedFile();
             importFileLabel.setText(file.getName());
-            progressBar.setValue(0);
+            progress.clear();
             
             handlingFile();
     
@@ -693,16 +695,9 @@ public class GUI extends javax.swing.JFrame {
         if("0".equals(iterationErrorPowerEditText.getText()))
             iterationErrorPowerEditText.setText("");
     }//GEN-LAST:event_iterationErrorPowerEditTextFocusGained
-    private static double progressIncrease = 0;
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        // TODO add your handling code here:
-        progressBar.setValue(0);
-        ArrayList<GThread<Double>> gThreads = new ArrayList<>();
-        final LogField processLog = new LogField(3, logField);
-        
-        
-        if(newtonBackwardCheckbox.isSelected()){
-            GThread<Double> newtonBackwGThread = new GThread<Double>() {
+
+    private GThread<Double> handleNewtonForwardGThread(final LogField processLog){
+        return new GThread<Double>() {
                 @Override
                 public Double onProgress() {
                     return new Newton(questionHolder).apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
@@ -711,8 +706,72 @@ public class GUI extends javax.swing.JFrame {
                 @Override
                 public void onFinished(Double value) {
                     processLog.addMessage(LogField.NEWTON_BACKWARD_X, value);
+                    progress.increasingByOne();
+                    if(exactApproximateErrorCheckbox.isSelected()){
+                        new GThread<Double>() {
+                            @Override
+                            public Double onProgress() {
+                                return Newton.Error.apply(Newton.NEWTON_BACKWARD);
+                            }
+
+                            @Override
+                            public void onFinished(Double t) {
+                                processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_BACKWARD_ERROR, t);
+                                progress.increasingByOne();
+                            }
+                        }.start();
+                        
+                    }
                 }
             };
+    }
+    
+    private GThread<Double> handleNewtonBackwardGThread(final LogField processLog){
+        return new GThread<Double>() {
+                @Override
+                public Double onProgress() {
+                    return new Newton(questionHolder).apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
+                }
+
+                @Override
+                public void onFinished(Double value) {
+                    processLog.addMessage(LogField.NEWTON_FORWARD_X, value);
+                    progress.increasingByOne();
+                    if(exactApproximateErrorCheckbox.isSelected()){
+                        new GThread<Double>() {
+                            @Override
+                            public Double onProgress() {
+                                return Newton.Error.apply(Newton.NEWTON_FORWARD);
+                            }
+
+                            @Override
+                            public void onFinished(Double t) {
+                                processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_FORWARD_ERROR, t);
+                                progress.increasingByOne();
+                            }
+                        }.start();
+                        
+                    }
+                }
+            };
+    }
+    
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        // TODO add your handling code here:
+        progress.clear();
+        ArrayList<GThread<Double>> gThreads = new ArrayList<>();
+        GThread<Double> newtonForwardGThread = null;
+        GThread<Double> newtonBackwardGThread = null;
+        
+        final LogField processLog = new LogField(3, logField);
+        
+        
+        if(newtonBackwardCheckbox.isSelected()){
+            newtonForwardGThread = handleNewtonForwardGThread(processLog);
+        }
+      
+        if(newtonForwardCheckbox.isSelected()){
+            newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
         }
         
         
