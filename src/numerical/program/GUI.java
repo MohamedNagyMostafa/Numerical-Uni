@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import methods.GThread;
 import methods.ScheduleGThread;
 import numerical.program.methods.Iteration;
 import numerical.program.methods.Lagrange;
+import numerical.program.methods.Mathematical;
 import numerical.program.methods.Newton;
 import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
@@ -708,11 +710,13 @@ public class GUI extends javax.swing.JFrame {
             iterationErrorPowerEditText.setText("");
     }//GEN-LAST:event_iterationErrorPowerEditTextFocusGained
 
-    private GThread<Double> handleNewtonBackwardGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleNewtonBackwardGThread(final LogField processLog){
+        final Newton newtonBackward = new Newton(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
                 @Override
                 public Double onProgress() {
-                    return new Newton(questionHolder).apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
+                    return newtonBackward.apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
                 }
 
                 @Override
@@ -735,14 +739,16 @@ public class GUI extends javax.swing.JFrame {
                         
                     }
                 }
-            };
+            }, newtonBackward);
     }
     
-    private GThread<Double> handleNewtonForwardGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleNewtonForwardGThread(final LogField processLog){
+        final Newton newtonForward = new Newton(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
                 @Override
                 public Double onProgress() {
-                    return new Newton(questionHolder).apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
+                    return newtonForward.apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
                 }
 
                 @Override
@@ -765,7 +771,7 @@ public class GUI extends javax.swing.JFrame {
                         
                     }
                 }
-            };
+            }, newtonForward);
     }
     
     private GThread<Double> handleLagrangeGThread(final LogField processLog){
@@ -826,15 +832,17 @@ public class GUI extends javax.swing.JFrame {
         };
     }
     
-    private GThread<Double> handleIterationGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleIterationGThread(final LogField processLog){
+        final Iteration iteration = new Iteration(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
             @Override
             public Double onProgress() {
                 if(iterationErrorPowerCheckbox.isSelected())
-                    return new Iteration(questionHolder).apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
+                    return iteration.apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
                             Double.valueOf(valueEditText.getText()));
                 else
-                    return new Iteration(questionHolder).apply(Iteration.DEFAULT_VALUE, Double.valueOf(valueEditText.getText()));
+                    return iteration.apply(Iteration.DEFAULT_VALUE, Double.valueOf(valueEditText.getText()));
             }
 
             @Override
@@ -842,7 +850,7 @@ public class GUI extends javax.swing.JFrame {
                 processLog.addMessage(LogField.ITERACTION, t);
                 progress.increasingByOne();
             }
-        };
+        }, iteration);
     }
     
     private GThread<Double> handleNewtonForwardErrorGThread(final LogField processLog){
@@ -896,11 +904,11 @@ public class GUI extends javax.swing.JFrame {
         progress.clear();
         ArrayList<GThread<Double>> gThreads = new ArrayList<>();
         int counter = 0;
-        GThread<Double> newtonForwardGThread;
-        GThread<Double> newtonBackwardGThread;
+        Pair<GThread<Double>, Mathematical> newtonForwardGThreadPair = null;
+        Pair<GThread<Double>, Mathematical> newtonBackwardGThreadPair = null;
+        Pair<GThread<Double>, Mathematical> iterationGThreadPair = null;
         GThread<Double> lagrangeGThread;
         GThread<Double> lagrangeInverseGThread;
-        GThread<Double> iterationGThread;
         GThread<Double> newtonForwardErrorGThread;
         GThread<Double> newtonBackwardErrorGThread;
         GThread<Double> trunctionErrorGThread;
@@ -909,14 +917,14 @@ public class GUI extends javax.swing.JFrame {
         
         if(originalRadioButton.isSelected()){
             if(newtonForwardCheckbox.isSelected()){
-                newtonForwardGThread = handleNewtonForwardGThread(processLog);
-                gThreads.add(newtonForwardGThread);
+                newtonForwardGThreadPair = handleNewtonForwardGThread(processLog);
+                gThreads.add(newtonForwardGThreadPair.getKey());
                 counter += increaseCounter();
             }
 
             if(newtonBackwardCheckbox.isSelected()){
-                newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
-                gThreads.add(newtonBackwardGThread);
+                newtonBackwardGThreadPair = handleNewtonBackwardGThread(processLog);
+                gThreads.add(newtonBackwardGThreadPair.getKey());
                 counter += increaseCounter();
                 println("" + counter);
             }
@@ -940,8 +948,8 @@ public class GUI extends javax.swing.JFrame {
             }
         }else if(inverseRadioButton.isSelected()){
             if(iterationCheckbox.isSelected()){
-                iterationGThread = handleIterationGThread(processLog);
-                gThreads.add(iterationGThread);
+                iterationGThreadPair = handleIterationGThread(processLog);
+                gThreads.add(iterationGThreadPair.getKey());
                 counter++;
             }
             
@@ -961,10 +969,37 @@ public class GUI extends javax.swing.JFrame {
         println(""+100/counter);
         progress.setIncreasingValue(100/counter);
        
+        final Pair<GThread<Double>, Mathematical> newtonForwardPair = 
+                newtonForwardGThreadPair;
+        final Pair<GThread<Double>, Mathematical> newtonBackwardPair = 
+                newtonBackwardGThreadPair;
+        final Pair<GThread<Double>, Mathematical> iterationPair = 
+                iterationGThreadPair;
+        
         ScheduleGThread scheduleGThread = new ScheduleGThread(5, gThreads.toArray(new GThread[gThreads.size()])) {
             @Override
             public void onScheduleFinished() {
-                processLog.addMessage("Progress completed");
+                HashMap<ArrayList<Double>, Integer> hashMap = new HashMap<>();
+                
+                if(newtonForwardPair != null)
+                    hashMap.put(
+                            ((Newton) newtonForwardPair.getValue())
+                            .getValues(Newton.NEWTON_FORWARD), 
+                            Mathematical.NEWTON_FORWARD_METHOD
+                    );
+                if(newtonBackwardPair != null)
+                    hashMap.put(
+                            ((Newton) newtonBackwardPair.getValue())
+                            .getValues(Newton.NEWTON_BACKWARD), 
+                            Mathematical.NEWTON_BACKWARD_METHOD
+                    );
+                if(iterationPair != null)
+                    hashMap.put(
+                            ((Iteration) iterationPair.getValue())
+                            .getValues(), 
+                            Mathematical.ITERATION_METHOD
+                    );
+                
             }
         };
         scheduleGThread.start();
