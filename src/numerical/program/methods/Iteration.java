@@ -24,7 +24,7 @@ public class Iteration extends Mathematical{
         double xValue =Converter.apply(Converter.apply(1/mQuestionHolder.getTable().deltaNodeValue(1)) * 
                 Converter.apply(value - mQuestionHolder.getTable().deltaNodeValue(0)));
         
-        return iterationProcess(0, xValue, value, error * -1);
+        return originalX(iterationProcess(0, xValue, value, error * -1));
     }
     
     private double iterationProcess(double preX_value, double newX_value, double yxValue, double error){
@@ -51,5 +51,12 @@ public class Iteration extends Mathematical{
         }else{
             return initial;
         }
+    }
+    
+    private double originalX(double newX){
+        double H_value = mQuestionHolder.getTable().distanceEqual();
+        double X_nodeValue = mQuestionHolder.getTable().deltaNodeValue(0);
+        
+        return Converter.apply(Converter.apply(H_value * newX )+ X_nodeValue) ;
     }
 }

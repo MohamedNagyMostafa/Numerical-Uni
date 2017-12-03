@@ -56,7 +56,7 @@ public class GUI extends javax.swing.JFrame {
                 try {
                     log.addMessage(LogField.READING_DATA);
                     progress.increaseBy(30);
-                    ExcelFile excelFile = new ExcelFile(new File("C:\\Users\\Mohamed Nagy\\Desktop\\data.xlsx"));
+                    ExcelFile excelFile = new ExcelFile(new File(file.getAbsolutePath()));
                     Pair<Double[], Double[]> data = excelFile.readFile();
                     progress.increaseBy(60);
                     Table table = new Table(data.getKey(), data.getValue());
@@ -716,7 +716,7 @@ public class GUI extends javax.swing.JFrame {
                                 processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_BACKWARD_ERROR, t);
                                 progress.increasingByOne();
                             }
-                        }.start();
+                        };
                         
                     }
                 }
@@ -746,7 +746,7 @@ public class GUI extends javax.swing.JFrame {
                                 processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_FORWARD_ERROR, t);
                                 progress.increasingByOne();
                             }
-                        }.start();
+                        };
                         
                     }
                 }
@@ -776,7 +776,7 @@ public class GUI extends javax.swing.JFrame {
                             processLog.addMessage(LogField.EXACT_APPROXIMATE_LAGRANGE_ERROR, value);
                             progress.increasingByOne();
                         }
-                    }.start();
+                    };
                 }
             }
         };
@@ -867,14 +867,14 @@ public class GUI extends javax.swing.JFrame {
         progress.clear();
         ArrayList<GThread<Double>> gThreads = new ArrayList<>();
         int counter = 0;
-        GThread<Double> newtonForwardGThread = null;
-        GThread<Double> newtonBackwardGThread = null;
-        GThread<Double> lagrangeGThread = null;
-        GThread<Double> lagrangeInverseGThread = null;
-        GThread<Double> iterationGThread = null;
-        GThread<Double> newtonForwardErrorGThread = null;
-        GThread<Double> newtonBackwardErrorGThread = null;
-        GThread<Double> trunctionErrorGThread = null;
+        GThread<Double> newtonForwardGThread;
+        GThread<Double> newtonBackwardGThread;
+        GThread<Double> lagrangeGThread;
+        GThread<Double> lagrangeInverseGThread;
+        GThread<Double> iterationGThread;
+        GThread<Double> newtonForwardErrorGThread;
+        GThread<Double> newtonBackwardErrorGThread;
+        GThread<Double> trunctionErrorGThread;
         
         final LogField processLog = new LogField(3, logField);
         
@@ -925,7 +925,7 @@ public class GUI extends javax.swing.JFrame {
         
         if(trunctionErrorCheckbox.isSelected()){
             trunctionErrorGThread = handleTrunctionErrorGThread(processLog);
-                gThreads.add(lagrangeInverseGThread);
+                gThreads.add(trunctionErrorGThread);
                 counter++;
         }
         println(""+100/counter);
