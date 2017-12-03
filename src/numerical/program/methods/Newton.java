@@ -5,7 +5,6 @@
  */
 package numerical.program.methods;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import javafx.util.Pair;
 import static numerical.program.methods.Mathematical.mQuestionHolder;
 import numerical.program.methods.tools.Converter;

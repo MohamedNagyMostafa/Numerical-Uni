@@ -50,6 +50,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void handlingFile(){
         final LogField log = new LogField(2, logField);
+        initialState();
         new GThread<String>() {
             @Override
             public String onProgress() {
@@ -85,6 +86,11 @@ public class GUI extends javax.swing.JFrame {
                 log.addMessage(LogField.TABLE_CREATED, filePath);
                 progress.increaseBy(100);
                 log.addMessage(LogField.READING_DATA_COMPLETED);
+                
+                originalRadioButton.setSelected(true);
+                originalRadioButton.setEnabled(true);
+                inverseRadioButton.setEnabled(true);
+                valueEditText.setEnabled(true);
             }
         }.start();
         
@@ -173,6 +179,7 @@ public class GUI extends javax.swing.JFrame {
         originalRadioButton.setForeground(new java.awt.Color(0, 197, 202));
         originalRadioButton.setText("Original ");
         originalRadioButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        originalRadioButton.setEnabled(false);
         originalRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 originalRadioButtonActionPerformed(evt);
@@ -183,6 +190,7 @@ public class GUI extends javax.swing.JFrame {
         inverseRadioButton.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         inverseRadioButton.setForeground(new java.awt.Color(0, 197, 202));
         inverseRadioButton.setText("Inverse");
+        inverseRadioButton.setEnabled(false);
         inverseRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inverseRadioButtonActionPerformed(evt);
@@ -972,6 +980,30 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exactApproximateEditTextKeyTyped
 
     
+    private void initialState(){
+        originalRadioButton.setSelected(false);
+        originalRadioButton.setEnabled(false);
+        
+        inverseRadioButton.setSelected(false);
+        inverseRadioButton.setEnabled(false);
+        
+        newtonForwardCheckbox.setSelected(false);
+        newtonForwardCheckbox.setEnabled(false);
+        
+        newtonBackwardCheckbox.setSelected(false);
+        newtonBackwardCheckbox.setEnabled(false);
+        
+        iterationCheckbox.setSelected(false);
+        iterationCheckbox.setEnabled(false);
+        
+        lagrangeCheckbox.setSelected(false);
+        lagrangeCheckbox.setEnabled(false);
+        
+        valueEditText.setEnabled(false);
+        valueEditText.setText("0");
+        checkErrorState();
+        
+    }
     /**
      * @param args the command line arguments
      */
