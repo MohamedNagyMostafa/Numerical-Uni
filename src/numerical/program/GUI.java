@@ -90,7 +90,7 @@ public class GUI extends javax.swing.JFrame {
                 originalRadioButton.setSelected(true);
                 originalRadioButton.setEnabled(true);
                 inverseRadioButton.setEnabled(true);
-                valueEditText.setEnabled(true);
+                originalProcess();
             }
         }.start();
         
@@ -593,6 +593,10 @@ public class GUI extends javax.swing.JFrame {
 
     private void originalRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalRadioButtonActionPerformed
         // TODO add your handling code here:
+        originalProcess();
+    }//GEN-LAST:event_originalRadioButtonActionPerformed
+    
+    private void originalProcess(){
         iterationCheckbox.setEnabled(false);
         iterationCheckbox.setSelected(false);
         lagrangeCheckbox.setEnabled(true);
@@ -601,8 +605,7 @@ public class GUI extends javax.swing.JFrame {
             newtonBackwardCheckbox.setEnabled(true);
         }
         valueEditText.setEnabled(true);
-    }//GEN-LAST:event_originalRadioButtonActionPerformed
-
+    }
     private void inverseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inverseRadioButtonActionPerformed
         // TODO add your handling code here:
         if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
@@ -728,7 +731,7 @@ public class GUI extends javax.swing.JFrame {
                                 processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_BACKWARD_ERROR, t);
                                 progress.increasingByOne();
                             }
-                        };
+                        }.start();
                         
                     }
                 }
@@ -758,7 +761,7 @@ public class GUI extends javax.swing.JFrame {
                                 processLog.addMessage(LogField.EXACT_APPROXIMATE_NEWTON_FORWARD_ERROR, t);
                                 progress.increasingByOne();
                             }
-                        };
+                        }.start();
                         
                     }
                 }
@@ -788,7 +791,7 @@ public class GUI extends javax.swing.JFrame {
                             processLog.addMessage(LogField.EXACT_APPROXIMATE_LAGRANGE_ERROR, value);
                             progress.increasingByOne();
                         }
-                    };
+                    }.start();
                 }
             }
         };
@@ -805,6 +808,20 @@ public class GUI extends javax.swing.JFrame {
             public void onFinished(final Double value) {
                 processLog.addMessage(LogField.LAGRANGE_INVERSE_Y, value);
                 progress.increasingByOne();
+                if(exactApproximateErrorCheckbox.isSelected()){
+                    new GThread<Double>() {
+                        @Override
+                        public Double onProgress() {
+                            return Lagrange.Error.applyExactApproximateError(value, Double.valueOf(exactApproximateEditText.getText()));
+                        }
+
+                        @Override
+                        public void onFinished(Double value) {
+                            processLog.addMessage(LogField.EXACT_APPROXIMATE_LAGRANGE_ERROR, value);
+                            progress.increasingByOne();
+                        }
+                    }.start();
+                }
             }
         };
     }
@@ -937,9 +954,10 @@ public class GUI extends javax.swing.JFrame {
         
         if(trunctionErrorCheckbox.isSelected()){
             trunctionErrorGThread = handleTrunctionErrorGThread(processLog);
-                gThreads.add(trunctionErrorGThread);
-                counter++;
+            gThreads.add(trunctionErrorGThread);
+            counter++;
         }
+        
         println(""+100/counter);
         progress.setIncreasingValue(100/counter);
        

@@ -108,9 +108,9 @@ public class Newton extends Mathematical{
         public static double apply(int type, double value){
             switch(type){
                 case NEWTON_BACKWARD:
-                    return applyNewtonBackwordError(value);
+                    return Math.abs(applyNewtonBackwordError(value));
                 case NEWTON_FORWARD:
-                    return applyNewtonForwardError(value);
+                    return Math.abs(applyNewtonForwardError(value));
             }
             return -1;
         }

@@ -18,7 +18,7 @@ public abstract class OriginalError {
         return Converter.apply(Math.abs(exact - approximate));
     }
     public static double trunctionError(QuestionHolder questionHolder, double exactDifferentiation, double xValue){
-        return Converter.apply(trunctionErrorProcess(xValue, 1, 0, 1, questionHolder.getTable()) * exactDifferentiation);
+        return Converter.apply(Math.abs(trunctionErrorProcess(xValue, 1, 0, 1, questionHolder.getTable()) * exactDifferentiation));
     }
     
     private static double trunctionErrorProcess(double xValue, int factorial, int node, double error, Table table){
