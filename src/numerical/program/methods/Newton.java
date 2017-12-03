@@ -5,6 +5,7 @@
  */
 package numerical.program.methods;
 
+import java.util.ArrayList;
 import javafx.util.Pair;
 import static numerical.program.methods.Mathematical.mQuestionHolder;
 import numerical.program.methods.tools.Converter;
@@ -22,13 +23,25 @@ public class Newton extends Mathematical{
     public static final int NEWTON_FORWARD = -1;
     public static final int NEWTON_BACKWARD = 1;
     
+    private ArrayList<Double> newtonForwardValues = null;
+    private ArrayList<Double> newtonBackwardValues = null;
+    
     public Newton(QuestionHolder questionHolder) {
         super(questionHolder);
     }
 
-  
+    public ArrayList<Double> getValues(int type){
+        switch(type){
+            case NEWTON_FORWARD:
+                return newtonForwardValues;
+            case NEWTON_BACKWARD:
+                return newtonBackwardValues;
+        }
+        return null;
+    }
     
     private Double applyNewtonForward(double value){
+        newtonForwardValues = new ArrayList<>();
         double P_newtonForward= calculateP(
                                 value,
                                 mQuestionHolder.getTable().xValue(0),
@@ -47,6 +60,8 @@ public class Newton extends Mathematical{
     }
     
     private Double applyNewtonBackward(double value){
+        newtonBackwardValues = new ArrayList<>();
+        
         double P_newtonBackward =calculateP(
                                 value,
                                 mQuestionHolder.getTable().max_xValue(),
@@ -67,9 +82,12 @@ public class Newton extends Mathematical{
     private double newtonForwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
+            newtonForwardValues.add(result);
             return newtonForwardProcess(table, Converter.apply(newP_Value * (pValue - index)), index + 1, factorial * (index + 1),
                     result + Converter.apply((newP_Value * table.deltaNodeValue(index))/factorial), pValue);
         }else{
+            newtonForwardValues.add(result);
+            newtonForwardValues.remove(newtonForwardValues.get(0));
             return result;
         }
         
@@ -78,9 +96,12 @@ public class Newton extends Mathematical{
     private double newtonBackwardProcess(Table table, double newP_Value, int index, long factorial, Double result, double pValue){
         
         if(table.containDelta(index)){
+            newtonBackwardValues.add(result);
             return newtonBackwardProcess(table, Converter.apply(newP_Value * (pValue + index)), index + 1, factorial * (index + 1),
                     result + Converter.apply((newP_Value * table.inverseDeltaValue(index))/factorial), pValue);
         }else{
+            newtonBackwardValues.add(result);
+            newtonBackwardValues.remove(newtonBackwardValues.get(0));
             return result;
         }
         
