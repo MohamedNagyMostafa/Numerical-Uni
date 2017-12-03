@@ -979,26 +979,33 @@ public class GUI extends javax.swing.JFrame {
         ScheduleGThread scheduleGThread = new ScheduleGThread(5, gThreads.toArray(new GThread[gThreads.size()])) {
             @Override
             public void onScheduleFinished() {
-                HashMap<ArrayList<Double>, Integer> hashMap = new HashMap<>();
+                HashMap<Integer, ArrayList<Double>> hashMap = new HashMap<>();
                 
                 if(newtonForwardPair != null)
-                    hashMap.put(
+                    hashMap.put( 
+                            Mathematical.NEWTON_FORWARD_METHOD,
                             ((Newton) newtonForwardPair.getValue())
-                            .getValues(Newton.NEWTON_FORWARD), 
-                            Mathematical.NEWTON_FORWARD_METHOD
+                            .getValues(Newton.NEWTON_FORWARD)
                     );
                 if(newtonBackwardPair != null)
                     hashMap.put(
+                            Mathematical.NEWTON_BACKWARD_METHOD,
                             ((Newton) newtonBackwardPair.getValue())
-                            .getValues(Newton.NEWTON_BACKWARD), 
-                            Mathematical.NEWTON_BACKWARD_METHOD
+                            .getValues(Newton.NEWTON_BACKWARD)
                     );
                 if(iterationPair != null)
                     hashMap.put(
+                            Mathematical.ITERATION_METHOD,
                             ((Iteration) iterationPair.getValue())
-                            .getValues(), 
-                            Mathematical.ITERATION_METHOD
+                            .getValues()
                     );
+                
+                try {
+                    processLog.addMessage(LogField.COMPARISON_CREATED,
+                            ExcelFile.writeComparisonFile(hashMap));
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             }
         };

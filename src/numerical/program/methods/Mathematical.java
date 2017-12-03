@@ -21,4 +21,14 @@ public abstract class Mathematical implements Numerical{
     public Mathematical(QuestionHolder questionHolder){
         mQuestionHolder = questionHolder;
     }  
+    
+    public static String getType(int type){
+        if(type == ITERATION_METHOD){
+            return "Iteration";
+        }else if(type == NEWTON_FORWARD_METHOD){
+            return "Newton Forward";
+        }else{
+            return "Newton Backward";
+        }
+    }
 }

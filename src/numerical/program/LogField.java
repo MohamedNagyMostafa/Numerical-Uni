@@ -33,6 +33,7 @@ public class LogField {
     public static final String TABLE_TYPE_EQUAL = "Table detected as equal table";
     public static final String TABLE_TYPE_INEQUAL = "Table detected as inequal table";
     public static final String TABLE_CREATED = "Table file is created in location ";
+    public static final String COMPARISON_CREATED = "Comparison file is created in location ";
     
     private final int processId;
     private final JTextArea logFieldArea;

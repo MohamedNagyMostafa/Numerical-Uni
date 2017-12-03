@@ -12,7 +12,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.util.Pair;
+import numerical.program.methods.Mathematical;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelFile {
     private static final String FILE_NAME = "Numerical";
+    private static final String FILE_NAME_COMPARISON = "Comparison";
     private static final String FILE_PATH = "C:\\Users\\Mohamed Nagy\\Desktop\\";
     private static final String FILE_FORMAT = ".xlsx";
     private static final int X_COLUMN_INDEX = 0;
@@ -88,4 +91,53 @@ public class ExcelFile {
         return file.getAbsolutePath();
     }
     
+    public static String writeComparisonFile(HashMap<Integer, ArrayList<Double>> data) throws FileNotFoundException, IOException{
+        if(data.size() > 0){
+            XSSFWorkbook xSSFWorkbook = new XSSFWorkbook();
+            XSSFSheet xSSFSheet = xSSFWorkbook.createSheet();
+            boolean[] existance = {data.containsKey(Mathematical.ITERATION_METHOD),
+            data.containsKey(Mathematical.NEWTON_FORWARD_METHOD),
+            data.containsKey(Mathematical.NEWTON_BACKWARD_METHOD)};
+           
+            // detect maximum one.
+            int max = 0;
+            Row headerRow = xSSFSheet.createRow(0);
+            for(int i = 0 ; i < 3 ; i++){
+                if(existance[i]){
+                    headerRow.createCell(i).setCellValue(Mathematical.getType(i));
+                    if(data.get(i + 1).size() > max){
+                        max = data.get(i + 1).size();
+                    }
+                }
+            }
+            
+            for(int i = 0;i < max; i++){
+                Row row = xSSFSheet.createRow(i + 1);
+                for(int j = 0 ; j < 3; j++){
+                    if(existance[j] && data.get(j + 1).size() > j ){
+                        Cell cell = row.createCell(j);
+                        cell.setCellValue(data.get(j+1).get(i));
+                    }
+                }
+            }
+
+           int fileCode = 0;
+           File file;
+           do{
+                if(fileCode == 0)
+                    file = new File(FILE_PATH + FILE_NAME_COMPARISON + FILE_FORMAT);
+                else
+                    file = new File(FILE_PATH + FILE_NAME_COMPARISON + String.valueOf(fileCode) + FILE_FORMAT);
+                fileCode++;
+           }while(file.exists());
+
+            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                xSSFWorkbook.write(fileOutputStream);
+            }
+
+            return file.getAbsolutePath();
+        }else{
+            return "";
+        }
+    } 
 }
