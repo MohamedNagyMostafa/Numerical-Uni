@@ -5,6 +5,7 @@
  */
 package numerical.program.methods;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
 
@@ -29,12 +30,14 @@ public class Iteration extends Mathematical{
     
     private double iterationProcess(double preX_value, double newX_value, double yxValue, double error){
         if(Math.abs(Converter.apply(preX_value - newX_value)) > (Math.pow(10, error))){
+            Util.println("x : " + newX_value);
             return iterationProcess(newX_value, 
                    Converter.apply(Converter.apply(1/mQuestionHolder.getTable().deltaNodeValue(1))*
                             Converter.apply(calculator(newX_value, Converter.apply(yxValue - mQuestionHolder.getTable().deltaNodeValue(0)), 2, 1, newX_value))), 
                     yxValue, 
                     error);
         }else{
+            Util.println("x : " + newX_value);
             return newX_value;
         }
     }
@@ -55,8 +58,8 @@ public class Iteration extends Mathematical{
     
     private double originalX(double newX){
         double H_value = mQuestionHolder.getTable().distanceEqual();
-        double X_nodeValue = mQuestionHolder.getTable().deltaNodeValue(0);
-        
+        double X_nodeValue = mQuestionHolder.getTable().xValue(0);
+        Util.println("h: " + H_value + " Xnode : " + X_nodeValue);
         return Converter.apply(Converter.apply(H_value * newX )+ X_nodeValue) ;
     }
 }

@@ -588,14 +588,18 @@ public class GUI extends javax.swing.JFrame {
         iterationCheckbox.setEnabled(false);
         iterationCheckbox.setSelected(false);
         lagrangeCheckbox.setEnabled(true);
-        newtonForwardCheckbox.setEnabled(true);
-        newtonBackwardCheckbox.setEnabled(true);
+        if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
+            newtonForwardCheckbox.setEnabled(true);
+            newtonBackwardCheckbox.setEnabled(true);
+        }
         valueEditText.setEnabled(true);
     }//GEN-LAST:event_originalRadioButtonActionPerformed
 
     private void inverseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inverseRadioButtonActionPerformed
         // TODO add your handling code here:
-        iterationCheckbox.setEnabled(true);
+        if(questionHolder.getTable().tableType() == Table.EQUAL_TABLE){
+            iterationCheckbox.setEnabled(true);
+        }
         lagrangeCheckbox.setEnabled(true);
         newtonForwardCheckbox.setEnabled(false);
         newtonForwardCheckbox.setSelected(false);

@@ -119,7 +119,7 @@ public class Table {
     }
     
     public Double distanceEqual(){
-        return m_xValues[1] - m_xValues[0];
+        return Converter.apply(m_xValues[1] - m_xValues[0]);
     }
     
     public boolean containDelta(long index){
