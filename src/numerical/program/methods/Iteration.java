@@ -14,6 +14,7 @@ import numerical.program.methods.tools.QuestionHolder;
  */
 public class Iteration extends Mathematical{
     
+    public static final int DEFAULT_VALUE =2;
     public Iteration(QuestionHolder questionHolder) {
         super(questionHolder);
     }
@@ -23,7 +24,7 @@ public class Iteration extends Mathematical{
         double xValue =Converter.apply(Converter.apply(1/mQuestionHolder.getTable().deltaNodeValue(1)) * 
                 Converter.apply(value - mQuestionHolder.getTable().deltaNodeValue(0)));
         
-        return iterationProcess(0, xValue, value, error);
+        return iterationProcess(0, xValue, value, error * -1);
     }
     
     private double iterationProcess(double preX_value, double newX_value, double yxValue, double error){

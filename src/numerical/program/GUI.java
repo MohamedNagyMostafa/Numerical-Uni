@@ -419,17 +419,12 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(exactApproximateErrorCheckbox)
                             .addComponent(lagrangeCheckbox)
                             .addComponent(trunctionErrorCheckbox))
+                        .addGap(47, 47, 47)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(iterationCheckbox)
-                                    .addComponent(newtonForwardCheckbox)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(exactApproximateEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(trunctionEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(iterationCheckbox)
+                            .addComponent(newtonForwardCheckbox)
+                            .addComponent(exactApproximateEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(trunctionEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(newtonErrorCheckbox)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(iterationErrorPowerCheckbox)
@@ -529,9 +524,9 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(41, 41, 41)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(startButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -810,7 +805,7 @@ public class GUI extends javax.swing.JFrame {
                     return new Iteration(questionHolder).apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
                             Double.valueOf(valueEditText.getText()));
                 else
-                    return new Iteration(questionHolder).apply(2, Double.valueOf(valueEditText.getText()));
+                    return new Iteration(questionHolder).apply(Iteration.DEFAULT_VALUE, Double.valueOf(valueEditText.getText()));
             }
 
             @Override
@@ -830,7 +825,7 @@ public class GUI extends javax.swing.JFrame {
 
             @Override
             public void onFinished(Double t) {
-                processLog.addMessage(LogField.NEWTON_FORWARD_ERROR);
+                processLog.addMessage(LogField.NEWTON_FORWARD_ERROR, t);
                 progress.increasingByOne();
             }
         };
@@ -845,7 +840,7 @@ public class GUI extends javax.swing.JFrame {
 
             @Override
             public void onFinished(Double t) {
-                processLog.addMessage(LogField.NEWTON_BACKWARD_ERROR);
+                processLog.addMessage(LogField.NEWTON_BACKWARD_ERROR, t);
                 progress.increasingByOne();
             }
         };
@@ -884,26 +879,26 @@ public class GUI extends javax.swing.JFrame {
         final LogField processLog = new LogField(3, logField);
         
         if(originalRadioButton.isSelected()){
-            if(newtonBackwardCheckbox.isSelected()){
+            if(newtonForwardCheckbox.isSelected()){
                 newtonForwardGThread = handleNewtonForwardGThread(processLog);
                 gThreads.add(newtonForwardGThread);
                 counter += increaseCounter();
             }
 
-            if(newtonForwardCheckbox.isSelected()){
+            if(newtonBackwardCheckbox.isSelected()){
                 newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
                 gThreads.add(newtonBackwardGThread);
                 counter += increaseCounter();
                 println("" + counter);
             }
             
-            if(newtonErrorCheckbox.isSelected()){
+            if(newtonErrorCheckbox.isSelected() && newtonForwardCheckbox.isSelected()){
                 newtonForwardErrorGThread = handleNewtonForwardErrorGThread(processLog);
                 gThreads.add(newtonForwardErrorGThread);
                 counter++;
             }
 
-            if(newtonErrorCheckbox.isSelected()){
+            if(newtonErrorCheckbox.isSelected() && newtonBackwardCheckbox.isSelected()){
                 newtonBackwardErrorGThread = handleNewtonBackwardErrorGThread(processLog);
                 gThreads.add(newtonBackwardErrorGThread);
                 counter++;
@@ -917,7 +912,7 @@ public class GUI extends javax.swing.JFrame {
         }else if(inverseRadioButton.isSelected()){
             if(iterationCheckbox.isSelected()){
                 iterationGThread = handleIterationGThread(processLog);
-                gThreads.add(newtonBackwardErrorGThread);
+                gThreads.add(iterationGThread);
                 counter++;
             }
             
