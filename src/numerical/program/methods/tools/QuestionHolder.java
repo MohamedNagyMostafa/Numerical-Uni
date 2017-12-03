@@ -5,7 +5,6 @@
  */
 package numerical.program.methods.tools;
 
-import numerical.program.methods.tools.Table;
 
 /**
  *
@@ -13,20 +12,10 @@ import numerical.program.methods.tools.Table;
  */
 public class QuestionHolder {
  
-    private Double mP_value;
     private final Table mTable;
     
     public QuestionHolder(Table table){
         mTable = table;
-    }
-
-
-    public void setP_value(Double p_value) {
-        this.mP_value = p_value;
-    }
-
-    public Double getP_value() {
-        return mP_value;
     }
 
     public Table getTable() {

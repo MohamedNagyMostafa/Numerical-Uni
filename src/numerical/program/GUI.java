@@ -824,7 +824,7 @@ public class GUI extends javax.swing.JFrame {
         return new GThread<Double>() {
             @Override
             public Double onProgress() {
-                return Newton.Error.apply(Newton.NEWTON_FORWARD);
+                return Newton.Error.apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
             }
 
             @Override
@@ -839,7 +839,7 @@ public class GUI extends javax.swing.JFrame {
         return new GThread<Double>() {
             @Override
             public Double onProgress() {
-                return Newton.Error.apply(Newton.NEWTON_BACKWARD);
+                return Newton.Error.apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
             }
 
             @Override

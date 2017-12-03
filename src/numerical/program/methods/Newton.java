@@ -5,6 +5,9 @@
  */
 package numerical.program.methods;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+import javafx.util.Pair;
+import static numerical.program.methods.Mathematical.mQuestionHolder;
 import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
 import numerical.program.methods.tools.Table;
@@ -17,7 +20,7 @@ public class Newton extends Mathematical{
     
     private static final short INITTIAL_INDEX = 1;
     private static final short INITIAL_FACTORIAL = 1; 
-    public static final int NEWTON_FORWARD = 0;
+    public static final int NEWTON_FORWARD = -1;
     public static final int NEWTON_BACKWARD = 1;
     
     public Newton(QuestionHolder questionHolder) {
@@ -27,39 +30,37 @@ public class Newton extends Mathematical{
   
     
     private Double applyNewtonForward(double value){
-        mQuestionHolder.setP_value(calculateP(
+        double P_newtonForward= calculateP(
                                 value,
                                 mQuestionHolder.getTable().xValue(0),
                                 mQuestionHolder.getTable().distanceEqual()
-                        )
         );
         
         return newtonForwardProcess(
                         mQuestionHolder.getTable(), 
-                        mQuestionHolder.getP_value(),
+                        P_newtonForward,
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
                         mQuestionHolder.getTable().deltaNodeValue(0),
-                        mQuestionHolder.getP_value()
+                        P_newtonForward
         );
         
     }
     
     private Double applyNewtonBackward(double value){
-        mQuestionHolder.setP_value(calculateP(
+        double P_newtonBackward =calculateP(
                                 value,
                                 mQuestionHolder.getTable().max_xValue(),
                                 mQuestionHolder.getTable().distanceEqual()
-                        )
         );
         
         return newtonBackwardProcess(
                         mQuestionHolder.getTable(), 
-                        mQuestionHolder.getP_value(),
+                        P_newtonBackward,
                         INITTIAL_INDEX,
                         INITIAL_FACTORIAL,
                         mQuestionHolder.getTable().inverseDeltaValue(0),
-                        mQuestionHolder.getP_value()
+                        P_newtonBackward
         );
         
     }
@@ -86,7 +87,7 @@ public class Newton extends Mathematical{
         
     }
     
-    private double calculateP(double value, double xNode, double distance){
+    private static double calculateP(double value, double xNode, double distance){
         return Converter.apply((value - xNode)/ distance);
     }
 
@@ -105,12 +106,12 @@ public class Newton extends Mathematical{
     
     public static class Error extends OriginalError{
         
-        public static double apply(int type){
+        public static double apply(int type, double value){
             switch(type){
                 case NEWTON_BACKWARD:
-                    return applyNewtonBackwordError();
+                    return applyNewtonBackwordError(value);
                 case NEWTON_FORWARD:
-                    return applyNewtonForwardError();
+                    return applyNewtonForwardError(value);
             }
             return -1;
         }
@@ -119,29 +120,45 @@ public class Newton extends Mathematical{
             return trunctionError(mQuestionHolder, exactDifferentiation, xValue);
         }
         
-        private static double applyNewtonForwardError(){
+        private static double applyNewtonForwardError(double value){
+            double P_newtonForward= calculateP(
+                                value,
+                                mQuestionHolder.getTable().xValue(0),
+                                mQuestionHolder.getTable().distanceEqual()
+            );
+            
+            Pair<Double, Integer> delta = mQuestionHolder.getTable().deltaNewtonErrorValue();
+           
             return newtonError(
-                    mQuestionHolder.getTable().tableType(),
-                    mQuestionHolder.getP_value(),
-                    mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
-                    mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                    NEWTON_FORWARD,
+                    P_newtonForward,
+                    delta.getKey(),
+                    delta.getValue(),
                     1,
                     1);
         }
 
-        private static double applyNewtonBackwordError(){
+        private static double applyNewtonBackwordError(double value){
+            double P_newtonBackward = calculateP(
+                                value,
+                                mQuestionHolder.getTable().max_xValue(),
+                                mQuestionHolder.getTable().distanceEqual()
+            );
+            
+            Pair<Double, Integer> delta = mQuestionHolder.getTable().deltaNewtonErrorValue();
+            
             return newtonError(
-                    1,
-                    mQuestionHolder.getP_value(),
-                    mQuestionHolder.getTable().deltaNewtonErrorValue().getKey(),
-                    mQuestionHolder.getTable().deltaNewtonErrorValue().getValue(),
+                    NEWTON_BACKWARD,
+                    P_newtonBackward,
+                    delta.getKey(),
+                    delta.getValue(),
                     1,
                     1);
         }
 
-        private static double newtonError(int tableType, double pValue, double deltaValue, int n, int nNew, double result){
+        private static double newtonError(int processType, double pValue, double deltaValue, int n, int nNew, double result){
             if(nNew <= n){
-                return newtonError(tableType, pValue, deltaValue, n, nNew + 1, Converter.apply(Converter.apply(result * Converter.apply(pValue + (nNew * tableType)))/nNew));
+                return newtonError(processType, pValue, deltaValue, n, nNew + 1, Converter.apply(Converter.apply(result * Converter.apply(pValue + (nNew * processType)))/nNew));
             }else{
                 return Converter.apply(result * Converter.apply(deltaValue * Converter.apply(pValue/(n + 1))));
             }

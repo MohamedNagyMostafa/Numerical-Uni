@@ -37,7 +37,6 @@ public class Iteration extends Mathematical{
                     yxValue, 
                     error);
         }else{
-            Util.println("x : " + newX_value);
             return newX_value;
         }
     }
@@ -59,7 +58,6 @@ public class Iteration extends Mathematical{
     private double originalX(double newX){
         double H_value = mQuestionHolder.getTable().distanceEqual();
         double X_nodeValue = mQuestionHolder.getTable().xValue(0);
-        Util.println("h: " + H_value + " Xnode : " + X_nodeValue);
         return Converter.apply(Converter.apply(H_value * newX )+ X_nodeValue) ;
     }
 }
