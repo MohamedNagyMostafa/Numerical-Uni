@@ -6,6 +6,7 @@
 package numerical.program.methods;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+import java.util.ArrayList;
 import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
 
@@ -16,6 +17,8 @@ import numerical.program.methods.tools.QuestionHolder;
 public class Iteration extends Mathematical{
     
     public static final int DEFAULT_VALUE =2;
+    public ArrayList<Double> iterationValues = null;
+    
     public Iteration(QuestionHolder questionHolder) {
         super(questionHolder);
     }
@@ -24,21 +27,27 @@ public class Iteration extends Mathematical{
     public double apply(int error, double value) {
         double xValue =Converter.apply(Converter.apply(1/mQuestionHolder.getTable().deltaNodeValue(1)) * 
                 Converter.apply(value - mQuestionHolder.getTable().deltaNodeValue(0)));
+        iterationValues = new ArrayList<>();
         
         return originalX(iterationProcess(0, xValue, value, error * -1));
     }
     
     private double iterationProcess(double preX_value, double newX_value, double yxValue, double error){
         if(Math.abs(Converter.apply(preX_value - newX_value)) > (Math.pow(10, error))){
-            Util.println("x : " + newX_value);
+            iterationValues.add(newX_value);
             return iterationProcess(newX_value, 
                    Converter.apply(Converter.apply(1/mQuestionHolder.getTable().deltaNodeValue(1))*
                             Converter.apply(calculator(newX_value, Converter.apply(yxValue - mQuestionHolder.getTable().deltaNodeValue(0)), 2, 1, newX_value))), 
                     yxValue, 
                     error);
         }else{
+            iterationValues.add(newX_value);
             return newX_value;
         }
+    }
+    
+    public ArrayList<Double> getValues(){
+        return iterationValues;
     }
     
     private double calculator(double xValue, double initial, int start, long factorial, double counter){

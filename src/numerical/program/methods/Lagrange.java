@@ -22,7 +22,6 @@ public class Lagrange extends Mathematical{
         super(questionHolder);
     }
     
-    
     @Override
     public double apply(int type, double value){
         switch(type){

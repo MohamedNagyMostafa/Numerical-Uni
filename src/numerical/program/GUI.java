@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import methods.GThread;
 import methods.ScheduleGThread;
 import numerical.program.methods.Iteration;
 import numerical.program.methods.Lagrange;
+import numerical.program.methods.Mathematical;
 import numerical.program.methods.Newton;
 import numerical.program.methods.tools.Converter;
 import numerical.program.methods.tools.QuestionHolder;
@@ -160,6 +162,7 @@ public class GUI extends javax.swing.JFrame {
         iterationErrorPowerCheckbox = new javax.swing.JCheckBox();
         exactApproximateEditText = new javax.swing.JTextField();
         importFileLabel1 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Numerical");
@@ -414,41 +417,14 @@ public class GUI extends javax.swing.JFrame {
         importFileLabel1.setForeground(new java.awt.Color(50, 208, 138));
         importFileLabel1.setText("Value : ");
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(50, 208, 138));
+        jLabel1.setText("© mohamednagy2015@outlook.com");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(newtonBackwardCheckbox)
-                            .addComponent(exactApproximateErrorCheckbox)
-                            .addComponent(lagrangeCheckbox)
-                            .addComponent(trunctionErrorCheckbox))
-                        .addGap(47, 47, 47)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(iterationCheckbox)
-                            .addComponent(newtonForwardCheckbox)
-                            .addComponent(exactApproximateEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(trunctionEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(newtonErrorCheckbox)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(iterationErrorPowerCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(iterationErrorPowerEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(originalRadioButton)
-                .addGap(47, 47, 47)
-                .addComponent(inverseRadioButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(importFileLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(valueEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -481,6 +457,44 @@ public class GUI extends javax.swing.JFrame {
                         .addGap(93, 93, 93)
                         .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(originalRadioButton)
+                        .addGap(47, 47, 47)
+                        .addComponent(inverseRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(importFileLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(valueEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(newtonBackwardCheckbox)
+                                            .addComponent(exactApproximateErrorCheckbox)
+                                            .addComponent(lagrangeCheckbox)
+                                            .addComponent(trunctionErrorCheckbox))
+                                        .addGap(47, 47, 47)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(iterationCheckbox)
+                                            .addComponent(newtonForwardCheckbox)
+                                            .addComponent(exactApproximateEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(trunctionEditText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(newtonErrorCheckbox)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(iterationErrorPowerCheckbox)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(iterationErrorPowerEditText, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -535,7 +549,9 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addGap(7, 7, 7))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -708,11 +724,13 @@ public class GUI extends javax.swing.JFrame {
             iterationErrorPowerEditText.setText("");
     }//GEN-LAST:event_iterationErrorPowerEditTextFocusGained
 
-    private GThread<Double> handleNewtonBackwardGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleNewtonBackwardGThread(final LogField processLog){
+        final Newton newtonBackward = new Newton(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
                 @Override
                 public Double onProgress() {
-                    return new Newton(questionHolder).apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
+                    return newtonBackward.apply(Newton.NEWTON_BACKWARD, Double.valueOf(valueEditText.getText()));
                 }
 
                 @Override
@@ -735,14 +753,16 @@ public class GUI extends javax.swing.JFrame {
                         
                     }
                 }
-            };
+            }, newtonBackward);
     }
     
-    private GThread<Double> handleNewtonForwardGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleNewtonForwardGThread(final LogField processLog){
+        final Newton newtonForward = new Newton(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
                 @Override
                 public Double onProgress() {
-                    return new Newton(questionHolder).apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
+                    return newtonForward.apply(Newton.NEWTON_FORWARD, Double.valueOf(valueEditText.getText()));
                 }
 
                 @Override
@@ -765,7 +785,7 @@ public class GUI extends javax.swing.JFrame {
                         
                     }
                 }
-            };
+            }, newtonForward);
     }
     
     private GThread<Double> handleLagrangeGThread(final LogField processLog){
@@ -826,15 +846,17 @@ public class GUI extends javax.swing.JFrame {
         };
     }
     
-    private GThread<Double> handleIterationGThread(final LogField processLog){
-        return new GThread<Double>() {
+    private Pair<GThread<Double>, Mathematical> handleIterationGThread(final LogField processLog){
+        final Iteration iteration = new Iteration(questionHolder);
+        
+        return new Pair<GThread<Double>, Mathematical>(new GThread<Double>() {
             @Override
             public Double onProgress() {
                 if(iterationErrorPowerCheckbox.isSelected())
-                    return new Iteration(questionHolder).apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
+                    return iteration.apply(Integer.valueOf(iterationErrorPowerEditText.getText()), 
                             Double.valueOf(valueEditText.getText()));
                 else
-                    return new Iteration(questionHolder).apply(Iteration.DEFAULT_VALUE, Double.valueOf(valueEditText.getText()));
+                    return iteration.apply(Iteration.DEFAULT_VALUE, Double.valueOf(valueEditText.getText()));
             }
 
             @Override
@@ -842,7 +864,7 @@ public class GUI extends javax.swing.JFrame {
                 processLog.addMessage(LogField.ITERACTION, t);
                 progress.increasingByOne();
             }
-        };
+        }, iteration);
     }
     
     private GThread<Double> handleNewtonForwardErrorGThread(final LogField processLog){
@@ -896,11 +918,11 @@ public class GUI extends javax.swing.JFrame {
         progress.clear();
         ArrayList<GThread<Double>> gThreads = new ArrayList<>();
         int counter = 0;
-        GThread<Double> newtonForwardGThread;
-        GThread<Double> newtonBackwardGThread;
+        Pair<GThread<Double>, Mathematical> newtonForwardGThreadPair = null;
+        Pair<GThread<Double>, Mathematical> newtonBackwardGThreadPair = null;
+        Pair<GThread<Double>, Mathematical> iterationGThreadPair = null;
         GThread<Double> lagrangeGThread;
         GThread<Double> lagrangeInverseGThread;
-        GThread<Double> iterationGThread;
         GThread<Double> newtonForwardErrorGThread;
         GThread<Double> newtonBackwardErrorGThread;
         GThread<Double> trunctionErrorGThread;
@@ -909,14 +931,14 @@ public class GUI extends javax.swing.JFrame {
         
         if(originalRadioButton.isSelected()){
             if(newtonForwardCheckbox.isSelected()){
-                newtonForwardGThread = handleNewtonForwardGThread(processLog);
-                gThreads.add(newtonForwardGThread);
+                newtonForwardGThreadPair = handleNewtonForwardGThread(processLog);
+                gThreads.add(newtonForwardGThreadPair.getKey());
                 counter += increaseCounter();
             }
 
             if(newtonBackwardCheckbox.isSelected()){
-                newtonBackwardGThread = handleNewtonBackwardGThread(processLog);
-                gThreads.add(newtonBackwardGThread);
+                newtonBackwardGThreadPair = handleNewtonBackwardGThread(processLog);
+                gThreads.add(newtonBackwardGThreadPair.getKey());
                 counter += increaseCounter();
                 println("" + counter);
             }
@@ -940,8 +962,8 @@ public class GUI extends javax.swing.JFrame {
             }
         }else if(inverseRadioButton.isSelected()){
             if(iterationCheckbox.isSelected()){
-                iterationGThread = handleIterationGThread(processLog);
-                gThreads.add(iterationGThread);
+                iterationGThreadPair = handleIterationGThread(processLog);
+                gThreads.add(iterationGThreadPair.getKey());
                 counter++;
             }
             
@@ -961,10 +983,45 @@ public class GUI extends javax.swing.JFrame {
         println(""+100/counter);
         progress.setIncreasingValue(100/counter);
        
+        final Pair<GThread<Double>, Mathematical> newtonForwardPair = 
+                newtonForwardGThreadPair;
+        final Pair<GThread<Double>, Mathematical> newtonBackwardPair = 
+                newtonBackwardGThreadPair;
+        final Pair<GThread<Double>, Mathematical> iterationPair = 
+                iterationGThreadPair;
+        
         ScheduleGThread scheduleGThread = new ScheduleGThread(5, gThreads.toArray(new GThread[gThreads.size()])) {
             @Override
             public void onScheduleFinished() {
-                processLog.addMessage("Progress completed");
+                HashMap<Integer, ArrayList<Double>> hashMap = new HashMap<>();
+                
+                if(newtonForwardPair != null)
+                    hashMap.put( 
+                            Mathematical.NEWTON_FORWARD_METHOD,
+                            ((Newton) newtonForwardPair.getValue())
+                            .getValues(Newton.NEWTON_FORWARD)
+                    );
+                if(newtonBackwardPair != null)
+                    hashMap.put(
+                            Mathematical.NEWTON_BACKWARD_METHOD,
+                            ((Newton) newtonBackwardPair.getValue())
+                            .getValues(Newton.NEWTON_BACKWARD)
+                    );
+                if(iterationPair != null)
+                    hashMap.put(
+                            Mathematical.ITERATION_METHOD,
+                            ((Iteration) iterationPair.getValue())
+                            .getValues()
+                    );
+                
+                try {
+                    String filePath = ExcelFile.writeComparisonFile(hashMap);
+                    if(!filePath.isEmpty())
+                        processLog.addMessage(LogField.COMPARISON_CREATED, filePath);
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }
         };
         scheduleGThread.start();
@@ -1068,6 +1125,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox iterationCheckbox;
     private javax.swing.JCheckBox iterationErrorPowerCheckbox;
     private javax.swing.JTextField iterationErrorPowerEditText;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

@@ -11,11 +11,24 @@ import numerical.program.methods.tools.QuestionHolder;
  *
  * @author mohamednagy
  */
-abstract class Mathematical implements Numerical{
-  
+public abstract class Mathematical implements Numerical{
+    public static final Integer ITERATION_METHOD = 1;
+    public static final Integer NEWTON_FORWARD_METHOD = 2;
+    public static final Integer NEWTON_BACKWARD_METHOD = 3;
+    
     static QuestionHolder mQuestionHolder;
     
     public Mathematical(QuestionHolder questionHolder){
         mQuestionHolder = questionHolder;
     }  
+    
+    public static String getType(int type){
+        if(type == ITERATION_METHOD){
+            return "Iteration";
+        }else if(type == NEWTON_FORWARD_METHOD){
+            return "Newton Forward";
+        }else{
+            return "Newton Backward";
+        }
+    }
 }
